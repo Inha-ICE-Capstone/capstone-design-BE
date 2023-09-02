@@ -1,16 +1,15 @@
 package com.inha.capstonedesign.member.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,25 +30,56 @@ public class Member implements UserDetails {
     @NotNull
     private String memberEmail;
 
-    @Column(name = "member_pw")
-//    @NotNull
+    @Column(name = "member_password")
+    @NotNull
     private String memberPassword;
 
     @Column(name = "member_name")
     @NotNull
     private String memberName;
 
-    // localdate로 해보기
+    @Column(name = "member_nickname")
+    @NotNull
+    private String memberNickName;
+
     @Column(name = "member_birth")
+    @NotNull
     private LocalDate memberBirthDate;
 
+    @Column(name = "member_age")
+    @NotNull
+    private Integer memberAge;
+
     @Column(name = "member_gender")
-    private String memberGender;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Gender memberGender;
+
+    @Column(name = "member_Address")
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Address memberAddress;
 
     @Column
     @Enumerated(EnumType.STRING)
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     private List<UserRole> roles = new ArrayList<>();
+
+    @Builder
+    public Member(String memberEmail, String memberPassword, String memberName, String memberNickName, LocalDate memberBirthDate, Gender memberGender, Address memberAddress) {
+        this.memberEmail = memberEmail;
+        this.memberPassword = memberPassword;
+        this.memberName = memberName;
+        this.memberNickName = memberNickName;
+        this.memberBirthDate = memberBirthDate;
+
+        LocalDate currentDate = LocalDate.now();
+        this.memberAge = Period.between(memberBirthDate, currentDate).getYears();
+
+        this.memberGender = memberGender;
+        this.memberAddress = memberAddress;
+        this.roles.add(UserRole.ROLE_USER);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

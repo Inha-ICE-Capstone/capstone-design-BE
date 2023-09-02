@@ -5,7 +5,6 @@ import com.inha.capstonedesign.auth.jwt.exception.TokenException;
 import com.inha.capstonedesign.auth.jwt.exception.TokenExceptionType;
 import com.inha.capstonedesign.member.dto.request.MemberRequestDto;
 import com.inha.capstonedesign.member.entity.Member;
-import com.inha.capstonedesign.member.entity.TestMember;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -104,40 +103,7 @@ public class JwtTokenUtil {
                 .build();
     }
 
-    public TokenDto generateToken(TestMember member) {
-
-        final String authoritiesString = member.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-
-        Instant now = Instant.now();
-
-        String accessToken = Jwts.builder()
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setIssuer(jwtProperties.getIssuer())
-                .setIssuedAt(Date.from(now))
-                .claim(NAME_KEY, member.getMemberEmail())
-                .claim(AUTHORITIES_KEY, authoritiesString)
-                .setExpiration(Date.from(now.plus(ACCESS_TOKEN_EXPIRE_TIME, ChronoUnit.MILLIS)))
-                .signWith(key, SignatureAlgorithm.HS512)
-                .compact();
-
-        String refreshToken = Jwts.builder()
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setIssuer(jwtProperties.getIssuer())
-                .setIssuedAt(Date.from(now))
-                .claim(NAME_KEY, member.getMemberEmail())
-                .setExpiration(Date.from(now.plus(REFRESH_TOKEN_EXPIRE_TIME, ChronoUnit.MILLIS)))
-                .signWith(key, SignatureAlgorithm.HS512)
-                .compact();
-
-        return TokenDto.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
-    }
-
-    public String reissueAccessToken(TestMember member) {
+    public String reissueAccessToken(Member member) {
         final String authoritiesString = member.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class AuthController {
     private final JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/members")
-    public ResponseEntity<String> signUp(@RequestBody MemberRequestDto.SignUp signUp) {
+    public ResponseEntity<String> signUp(@RequestBody @Valid MemberRequestDto.SignUp signUp) {
         authService.signUp(signUp);
 
         return ResponseEntity.ok(null);

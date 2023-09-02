@@ -8,7 +8,7 @@ import com.inha.capstonedesign.auth.jwt.exception.TokenException;
 import com.inha.capstonedesign.auth.jwt.exception.TokenExceptionType;
 import com.inha.capstonedesign.global.redis.RedisTemplateRepository;
 import com.inha.capstonedesign.member.dto.request.MemberRequestDto;
-import com.inha.capstonedesign.member.entity.TestMember;
+import com.inha.capstonedesign.member.entity.Member;
 import com.inha.capstonedesign.member.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -34,29 +34,25 @@ public class AuthService {
 
         String encryptedPassword = bCryptPasswordEncoder.encode(signUp.getMemberPassword());
 
-        memberRepository.save(
-                TestMember.builder()
-                        .memberEmail(signUp.getMemberEmail())
-                        .memberPassword(encryptedPassword)
-                        .build());
+        memberRepository.save(signUp.toEntity());
     }
 
     public TokenDto login(MemberRequestDto.Login login) {
-        final TestMember testMember = memberRepository.findByMemberEmail(login.getMemberEmail())
+        final Member member = memberRepository.findByMemberEmail(login.getMemberEmail())
                 .orElseThrow(() -> new AuthException(AuthExceptionType.INVALID_EMAIL_OR_PASSWORD));
 
-        if (!bCryptPasswordEncoder.matches(login.getMemberPassword(), testMember.getPassword())) {
+        if (!bCryptPasswordEncoder.matches(login.getMemberPassword(), member.getPassword())) {
             throw new AuthException(AuthExceptionType.INVALID_EMAIL_OR_PASSWORD);
         }
 
-        TokenDto tokenDto = jwtTokenUtil.generateToken(testMember);
+        TokenDto tokenDto = jwtTokenUtil.generateToken(member);
 
         final String refreshToken = tokenDto.getRefreshToken();
         final Long expiration = jwtTokenUtil.getExpiration(refreshToken);
         final Long expirationSecond = expiration / 1000;
 
         redisTemplateRepository.setDataWithExpiryMillis
-                ("RT: " + testMember.getMemberEmail(), refreshToken, expiration);
+                ("RT: " + member.getMemberEmail(), refreshToken, expiration);
 
         return tokenDto;
     }
@@ -72,10 +68,10 @@ public class AuthService {
             throw new TokenException(TokenExceptionType.INVALID_REFRESH_TOKEN);
         }
 
-        final TestMember testMember = memberRepository.findByMemberEmail(email)
+        final Member member = memberRepository.findByMemberEmail(email)
                 .orElseThrow(() -> new TokenException(TokenExceptionType.INVALID_REFRESH_TOKEN));
 
-        return jwtTokenUtil.reissueAccessToken(testMember);
+        return jwtTokenUtil.reissueAccessToken(member);
     }
 
     public void logout(String refreshToken) {
