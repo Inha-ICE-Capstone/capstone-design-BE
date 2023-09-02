@@ -54,7 +54,7 @@ dependencies {
 
 	implementation ('org.web3j:core:4.9.8')
 
-	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.7.1'
+	//implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.7.1'
 }
 
 tasks.named('test') {
