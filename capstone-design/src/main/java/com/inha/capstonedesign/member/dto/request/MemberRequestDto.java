@@ -63,10 +63,10 @@ public class MemberRequestDto {
             }
         }
 
-        public Member toEntity() {
+        public Member toEntity(String encryptedPassword) {
             return Member.builder()
                     .memberEmail(memberEmail)
-                    .memberPassword(memberPassword)
+                    .memberPassword(encryptedPassword)
                     .memberName(memberName)
                     .memberNickName(memberNickName)
                     .memberBirthDate(memberBirthDate)
