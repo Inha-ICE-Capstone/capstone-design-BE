@@ -16,6 +16,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -27,6 +28,11 @@ public class WebSecurityConfig {
 
     private final JwtTokenUtil jwtTokenUtil;
     public static final String[] AUTH_WHITELIST = {"/login", "/members", "/reissue", "/error"};
+
+    @Bean
+    public AntPathMatcher antPathMatcher() {
+        return new AntPathMatcher();
+    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -57,7 +63,7 @@ public class WebSecurityConfig {
                 .exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler())
                 .authenticationEntryPoint(authenticationEntryPoint()).and()
-                .addFilterBefore(new JwtFilter(jwtTokenUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(antPathMatcher(), jwtTokenUtil), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionHandlerFilter(), JwtFilter.class)
                 .build();
     }

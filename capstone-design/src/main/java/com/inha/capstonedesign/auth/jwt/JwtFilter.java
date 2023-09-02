@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -22,6 +23,7 @@ import static com.inha.capstonedesign.global.config.WebSecurityConfig.AUTH_WHITE
 public class JwtFilter extends OncePerRequestFilter {
 
     private static final String BEARER_TYPE_PREFIX = "Bearer ";
+    private final AntPathMatcher antPathMatcher;
     private final JwtTokenUtil jwtTokenUtil;
 
 
@@ -41,7 +43,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        return Arrays.stream(AUTH_WHITELIST).anyMatch(path::startsWith);
+        return Arrays.stream(AUTH_WHITELIST).anyMatch(pattern -> antPathMatcher.match(pattern, path));
     }
 
     private String extractToken(String authenticationHeader) {
