@@ -27,7 +27,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class WebSecurityConfig {
 
     private final JwtTokenUtil jwtTokenUtil;
-    public static final String[] AUTH_WHITELIST = {"/login", "/members", "/reissue", "/error"};
+    public static final String[] AUTH_WHITELIST = {"/login", "/members", "/reissue", "/error", "/authority/**"};
 
     @Bean
     public AntPathMatcher antPathMatcher() {

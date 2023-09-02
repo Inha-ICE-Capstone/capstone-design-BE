@@ -9,12 +9,16 @@ import com.inha.capstonedesign.auth.jwt.exception.TokenExceptionType;
 import com.inha.capstonedesign.global.redis.RedisTemplateRepository;
 import com.inha.capstonedesign.member.dto.request.MemberRequestDto;
 import com.inha.capstonedesign.member.entity.Member;
+import com.inha.capstonedesign.member.entity.Role;
 import com.inha.capstonedesign.member.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -69,7 +73,7 @@ public class AuthService {
         }
 
         final Member member = memberRepository.findByMemberEmail(email)
-                .orElseThrow(() -> new TokenException(TokenExceptionType.INVALID_REFRESH_TOKEN));
+                .orElseThrow(() -> new AuthException(AuthExceptionType.ACCOUNT_NOT_EXISTS));
 
         return jwtTokenUtil.reissueAccessToken(member);
     }
@@ -81,5 +85,15 @@ public class AuthService {
 
         redisTemplateRepository.deleteData("RT: " + email);
 
+    }
+
+    @Transactional
+    public void upgradeAuthority(String memberEmail) {
+        final Member member = memberRepository.findByMemberEmail(memberEmail)
+                .orElseThrow(() -> new AuthException(AuthExceptionType.ACCOUNT_NOT_EXISTS));
+
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.ROLE_ADMIN);
+        member.setRoles(roles);
     }
 }

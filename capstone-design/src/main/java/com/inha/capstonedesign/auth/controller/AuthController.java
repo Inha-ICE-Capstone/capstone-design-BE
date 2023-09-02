@@ -8,10 +8,7 @@ import com.inha.capstonedesign.auth.service.AuthService;
 import com.inha.capstonedesign.member.dto.request.MemberRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -77,6 +74,13 @@ public class AuthController {
 
         refreshCookie.setMaxAge(0);
         response.addCookie(refreshCookie);
+
+        return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("/authority/{memberEmail}")
+    public ResponseEntity<String> upgradeAuthority(@PathVariable String memberEmail) {
+        authService.upgradeAuthority(memberEmail);
 
         return ResponseEntity.ok(null);
     }

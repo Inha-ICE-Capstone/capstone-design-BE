@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 
 @Getter
 @Entity
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member")
 public class Member implements UserDetails {
@@ -63,7 +61,7 @@ public class Member implements UserDetails {
     @Column
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.LAZY)
-    private List<UserRole> roles = new ArrayList<>();
+    private List<Role> roles = new ArrayList<>();
 
     @Builder
     public Member(String memberEmail, String memberPassword, String memberName, String memberNickName, LocalDate memberBirthDate, Gender memberGender, Address memberAddress) {
@@ -78,7 +76,11 @@ public class Member implements UserDetails {
 
         this.memberGender = memberGender;
         this.memberAddress = memberAddress;
-        this.roles.add(UserRole.ROLE_USER);
+        this.roles.add(Role.ROLE_USER);
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 
     @Override
