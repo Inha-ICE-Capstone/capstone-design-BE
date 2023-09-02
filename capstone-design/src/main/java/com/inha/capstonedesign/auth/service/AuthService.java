@@ -38,7 +38,7 @@ public class AuthService {
 
         String encryptedPassword = bCryptPasswordEncoder.encode(signUp.getMemberPassword());
 
-        memberRepository.save(signUp.toEntity());
+        memberRepository.save(signUp.toEntity(encryptedPassword));
     }
 
     public TokenDto login(MemberRequestDto.Login login) {
