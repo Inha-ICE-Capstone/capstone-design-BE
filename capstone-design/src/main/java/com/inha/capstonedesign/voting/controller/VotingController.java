@@ -1,10 +1,14 @@
 package com.inha.capstonedesign.voting.controller;
 
+import com.inha.capstonedesign.voting.dto.request.CandidateRequestDto;
+import com.inha.capstonedesign.voting.dto.request.VoteRequestDto;
 import com.inha.capstonedesign.voting.service.VotingService;
+import com.inha.capstonedesign.voting.solidity.Voting;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -15,27 +19,42 @@ public class VotingController {
 
     private final VotingService votingService;
 
-    @GetMapping("/candidate-list")
-    public ResponseEntity<List<String>> getCandidateList() {
-        return ResponseEntity.ok(votingService.getCandidateList());
-    }
+    @GetMapping("/ballots")
+    public ResponseEntity<List<String>> getBallotList() {
+        List<String> ballotList = votingService.getBallotList();
 
-    @PostMapping("/add-candidate/{candidateName}")
-    public ResponseEntity<String> addCandidate(@PathVariable String candidateName) {
-        votingService.addCandidate(candidateName);
+        return ResponseEntity.ok(ballotList);
+    }
+    @PostMapping("/ballots/{ballotName}")
+    public ResponseEntity<String> addBallot(@PathVariable String ballotName) {
+        votingService.addBallot(ballotName);
 
         return ResponseEntity.ok(null);
     }
 
-    @PostMapping("/{candidateName}")
-    public ResponseEntity<String> vote(@PathVariable String candidateName) {
-        votingService.vote(candidateName);
+    @GetMapping("/candidates/{ballotId}")
+    public ResponseEntity<List<String>> getCandidateList(@PathVariable Integer ballotId) {
+        return ResponseEntity.ok(votingService.getCandidateList(ballotId));
+    }
+
+    @PostMapping("/candidates")
+    public ResponseEntity<String> addCandidate(@RequestBody @Valid CandidateRequestDto candidateDto) {
+        votingService.addCandidate(candidateDto);
 
         return ResponseEntity.ok(null);
     }
 
-    @GetMapping("/total-votes/{candidateName}")
-    public ResponseEntity<BigInteger> getTotalVotes(@PathVariable String candidateName) {
-        return ResponseEntity.ok(votingService.getTotalVotes(candidateName));
+    @GetMapping("/total-votes")
+    public ResponseEntity<BigInteger> getTotalVotes(@RequestBody @Valid VoteRequestDto voteDto) {
+        return ResponseEntity.ok(votingService.getTotalVotes(voteDto));
     }
+
+
+    @PostMapping
+    public ResponseEntity<String> vote(@RequestBody @Valid VoteRequestDto voteDto) {
+        votingService.vote(voteDto);
+
+        return ResponseEntity.ok(null);
+    }
+
 }

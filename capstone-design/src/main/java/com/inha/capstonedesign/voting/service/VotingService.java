@@ -2,6 +2,8 @@ package com.inha.capstonedesign.voting.service;
 
 import com.inha.capstonedesign.global.web3j.GasProvider;
 import com.inha.capstonedesign.global.web3j.Web3jProperties;
+import com.inha.capstonedesign.voting.dto.request.CandidateRequestDto;
+import com.inha.capstonedesign.voting.dto.request.VoteRequestDto;
 import com.inha.capstonedesign.voting.solidity.Voting;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 
 import javax.annotation.PostConstruct;
+import javax.validation.Valid;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,16 +35,31 @@ public class VotingService {
         votingContract = Voting.load(web3jProperties.getContractAddress(), web3j, credentials, gasProvider);
     }
 
-    public List<String> getCandidateList() {
+    public List<String> getBallotList() {
         try {
-//            List <Voting.Candidate>candidateList = votingContract.getCandidateList().send();
-//            List candidateNameList = new ArrayList<>();
-//            for(Voting.Candidate candidate : candidateList) {
-//                candidateNameList.add(candidate.getCandidateName());
-//            }
+            List<Voting.Ballot> ballotList = votingContract.getBallotList().send();
+            List<String> ballotNameList = ballotList.stream().map(Voting.Ballot::getBallotName)
+                    .collect(Collectors.toList());
+            return ballotNameList;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-            List<Voting.Candidate> send = votingContract.getCandidateList().send();
-            List<String> candidateNameList = send.stream().map(Voting.Candidate::getCandidateName)
+    public void addBallot(String ballotName) {
+        try {
+            votingContract.addBallot(ballotName).send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> getCandidateList(Integer ballotId) {
+        try {
+
+            List<Voting.Candidate> send = votingContract.getCandidateList(BigInteger.valueOf(ballotId)).send();
+            List<String> candidateNameList = send.stream().map(Voting.Candidate::getName)
                     .collect(Collectors.toList());
             return candidateNameList;
         } catch (Exception e) {
@@ -50,35 +68,29 @@ public class VotingService {
         return new ArrayList<>();
     }
 
-    public void vote(String candidateName) {
+    public void addCandidate(CandidateRequestDto candidateDto) {
         try {
-            long beforeTime = System.currentTimeMillis();
-            System.out.println("======================================");
-            votingContract.voteForCandidate(candidateName).send();
-            long afterTime = System.currentTimeMillis();
-            System.out.println("======================================");
-            long secDiffTime = (afterTime - beforeTime)/1000;
-            System.out.println("secDiffTime = " + secDiffTime);
+            votingContract.addCandidate(BigInteger.valueOf(candidateDto.getBallotId()), candidateDto.getCandidateName()).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void addCandidate(String candidateName) {
+        public BigInteger getTotalVotes(VoteRequestDto voteDto) {
         try {
-            votingContract.addCandidate(candidateName).send();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public BigInteger getTotalVotes(String candidateName) {
-        try {
-            BigInteger totalVotes = votingContract.totalVotes(candidateName).send();
+            BigInteger totalVotes = votingContract.totalVotes(BigInteger.valueOf(voteDto.getBallotId()), voteDto.getCandidateName()).send();
             return totalVotes;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return BigInteger.valueOf(-9999L);
+    }
+
+    public void vote(VoteRequestDto voteDto) {
+        try {
+            votingContract.voteForCandidate(BigInteger.valueOf(voteDto.getBallotId()), voteDto.getCandidateName()).send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
