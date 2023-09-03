@@ -1,5 +1,6 @@
 package com.inha.capstonedesign.member.entity;
 
+import com.inha.capstonedesign.voting.entity.VotingRecord;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -62,6 +63,9 @@ public class Member implements UserDetails {
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.LAZY)
     private List<Role> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "voter")
+    private List<VotingRecord> votingRecords = new ArrayList<>();
 
     @Builder
     public Member(String memberEmail, String memberPassword, String memberName, String memberNickName, LocalDate memberBirthDate, Gender memberGender, Address memberAddress) {
