@@ -3,7 +3,6 @@ package com.inha.capstonedesign.voting.controller;
 import com.inha.capstonedesign.voting.dto.request.CandidateRequestDto;
 import com.inha.capstonedesign.voting.dto.request.VoteRequestDto;
 import com.inha.capstonedesign.voting.service.VotingService;
-import com.inha.capstonedesign.voting.solidity.Voting;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +24,7 @@ public class VotingController {
 
         return ResponseEntity.ok(ballotList);
     }
+
     @PostMapping("/ballots/{ballotName}")
     public ResponseEntity<String> addBallot(@PathVariable String ballotName) {
         votingService.addBallot(ballotName);
@@ -44,9 +44,9 @@ public class VotingController {
         return ResponseEntity.ok(null);
     }
 
-    @GetMapping("/total-votes")
-    public ResponseEntity<BigInteger> getTotalVotes(@RequestBody @Valid VoteRequestDto voteDto) {
-        return ResponseEntity.ok(votingService.getTotalVotes(voteDto));
+    @GetMapping("/vote-count")
+    public ResponseEntity<BigInteger> getVoteCount(@RequestBody @Valid VoteRequestDto voteDto) {
+        return ResponseEntity.ok(votingService.getVoteCount(voteDto));
     }
 
 

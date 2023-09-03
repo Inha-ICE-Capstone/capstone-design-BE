@@ -12,7 +12,6 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 
 import javax.annotation.PostConstruct;
-import javax.validation.Valid;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +75,7 @@ public class VotingService {
         }
     }
 
-        public BigInteger getTotalVotes(VoteRequestDto voteDto) {
+        public BigInteger getVoteCount(VoteRequestDto voteDto) {
         try {
             BigInteger totalVotes = votingContract.totalVotes(BigInteger.valueOf(voteDto.getBallotId()), voteDto.getCandidateName()).send();
             return totalVotes;

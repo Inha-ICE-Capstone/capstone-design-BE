@@ -21,8 +21,8 @@ public class Candidate {
     @Column(name = "candidate_name")
     private String candidateName;
 
-    @Column(name = "candidate_votes")
-    private Integer candidateVotes;
+    @Column(name = "candidate_vote_count")
+    private Integer candidateVoteCount;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
