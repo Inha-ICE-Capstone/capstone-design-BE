@@ -1,6 +1,6 @@
 package com.inha.capstonedesign.member.entity;
 
-public enum Address {
+public enum Region {
 
     SEOUL("서울"),
     GYEONGGI ("경기도"),
@@ -18,7 +18,7 @@ public enum Address {
         return korean;
     }
 
-    Address(String korean) {
+    Region(String korean) {
         this.korean = korean;
     }
 }

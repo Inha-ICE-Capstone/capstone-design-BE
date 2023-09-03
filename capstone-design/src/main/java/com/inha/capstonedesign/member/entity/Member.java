@@ -54,10 +54,10 @@ public class Member implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Gender memberGender;
 
-    @Column(name = "member_Address")
+    @Column(name = "member_Region")
     @NotNull
     @Enumerated(EnumType.STRING)
-    private Address memberAddress;
+    private Region memberRegion;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -68,7 +68,7 @@ public class Member implements UserDetails {
     private List<VotingRecord> votingRecords = new ArrayList<>();
 
     @Builder
-    public Member(String memberEmail, String memberPassword, String memberName, String memberNickName, LocalDate memberBirthDate, Gender memberGender, Address memberAddress) {
+    public Member(String memberEmail, String memberPassword, String memberName, String memberNickName, LocalDate memberBirthDate, Gender memberGender, Region memberRegion) {
         this.memberEmail = memberEmail;
         this.memberPassword = memberPassword;
         this.memberName = memberName;
@@ -79,7 +79,7 @@ public class Member implements UserDetails {
         this.memberAge = Period.between(memberBirthDate, currentDate).getYears();
 
         this.memberGender = memberGender;
-        this.memberAddress = memberAddress;
+        this.memberRegion = memberRegion;
         this.roles.add(Role.ROLE_USER);
     }
 

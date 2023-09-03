@@ -1,6 +1,6 @@
 package com.inha.capstonedesign.member.dto.request;
 
-import com.inha.capstonedesign.member.entity.Address;
+import com.inha.capstonedesign.member.entity.Region;
 import com.inha.capstonedesign.member.entity.Gender;
 import com.inha.capstonedesign.member.entity.Member;
 import lombok.Getter;
@@ -31,7 +31,7 @@ public class MemberRequestDto {
         @NotNull
         private String memberGender;
         @NotNull
-        private String memberAddress;
+        private String memberRegion;
 
         public Gender setEnumMemberGender(String gender) {
             if (gender.equals(Gender.MALE.getKorean())) {
@@ -41,25 +41,25 @@ public class MemberRequestDto {
             }
         }
 
-        public Address setEnumMemberAddress(String address) {
-            if (address.equals(Address.GYEONGGI.getKorean())) {
-                return Address.GYEONGGI;
-            } else if (address.equals(Address.GANGWON.getKorean())) {
-                return Address.GANGWON;
-            } else if (address.equals(Address.CHUNGCHEONGBUK.getKorean())) {
-                return Address.CHUNGCHEONGBUK;
-            } else if (address.equals(Address.CHUNGCHEONGNAM.getKorean())) {
-                return Address.CHUNGCHEONGNAM;
-            } else if (address.equals(Address.JEOLLABUK.getKorean())) {
-                return Address.JEOLLABUK;
-            } else if (address.equals(Address.JEOLLANAM.getKorean())) {
-                return Address.JEOLLANAM;
-            } else if (address.equals(Address.GYEONGSANGBUK.getKorean())) {
-                return Address.GYEONGSANGBUK;
-            } else if (address.equals(Address.GYEONGSANGNAM.getKorean())) {
-                return Address.GYEONGSANGNAM;
+        public Region setEnumMemberRegion(String region) {
+            if (region.equals(Region.GYEONGGI.getKorean())) {
+                return Region.GYEONGGI;
+            } else if (region.equals(Region.GANGWON.getKorean())) {
+                return Region.GANGWON;
+            } else if (region.equals(Region.CHUNGCHEONGBUK.getKorean())) {
+                return Region.CHUNGCHEONGBUK;
+            } else if (region.equals(Region.CHUNGCHEONGNAM.getKorean())) {
+                return Region.CHUNGCHEONGNAM;
+            } else if (region.equals(Region.JEOLLABUK.getKorean())) {
+                return Region.JEOLLABUK;
+            } else if (region.equals(Region.JEOLLANAM.getKorean())) {
+                return Region.JEOLLANAM;
+            } else if (region.equals(Region.GYEONGSANGBUK.getKorean())) {
+                return Region.GYEONGSANGBUK;
+            } else if (region.equals(Region.GYEONGSANGNAM.getKorean())) {
+                return Region.GYEONGSANGNAM;
             } else {
-                return Address.SEOUL;
+                return Region.SEOUL;
             }
         }
 
@@ -71,7 +71,7 @@ public class MemberRequestDto {
                     .memberNickName(memberNickName)
                     .memberBirthDate(memberBirthDate)
                     .memberGender(setEnumMemberGender(memberGender))
-                    .memberAddress(setEnumMemberAddress(memberAddress))
+                    .memberRegion(setEnumMemberRegion(memberRegion))
                     .build();
         }
     }
