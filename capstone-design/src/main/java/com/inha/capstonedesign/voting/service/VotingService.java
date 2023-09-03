@@ -77,8 +77,8 @@ public class VotingService {
 
         public BigInteger getVoteCount(VoteRequestDto voteDto) {
         try {
-            BigInteger totalVotes = votingContract.totalVotes(BigInteger.valueOf(voteDto.getBallotId()), voteDto.getCandidateName()).send();
-            return totalVotes;
+            BigInteger voteCount = votingContract.getVoteCount(BigInteger.valueOf(voteDto.getBallotId()), voteDto.getCandidateName()).send();
+            return voteCount;
         } catch (Exception e) {
             e.printStackTrace();
         }
