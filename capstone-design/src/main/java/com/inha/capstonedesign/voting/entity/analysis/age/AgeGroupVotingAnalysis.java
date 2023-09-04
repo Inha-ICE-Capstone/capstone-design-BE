@@ -23,6 +23,6 @@ public class AgeGroupVotingAnalysis {
     private AgeGroup ageGroup;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "candidate")
+    @JoinColumn(name = "candidate_id")
     private Candidate candidate;
 }

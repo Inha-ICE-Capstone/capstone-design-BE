@@ -24,6 +24,6 @@ public class GenderVotingAnalysis {
     private Gender gender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "candidate")
+    @JoinColumn(name = "candidate_id")
     private Candidate candidate;
 }

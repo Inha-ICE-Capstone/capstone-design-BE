@@ -22,12 +22,12 @@ public class VotingRecord extends BaseEntity {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "voter")
+    @JoinColumn(name = "voter_id")
     private Member voter;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ballot")
+    @JoinColumn(name = "ballot_id")
     private Ballot ballot;
 
     @Column(name = "voting_record_status")
