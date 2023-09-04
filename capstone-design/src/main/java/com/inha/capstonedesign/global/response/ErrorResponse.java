@@ -1,4 +1,4 @@
-package com.inha.capstonedesign.global.exception;
+package com.inha.capstonedesign.global.response;
 
 import lombok.Getter;
 
