@@ -1,5 +1,6 @@
 package com.inha.capstonedesign.member.entity;
 
+import com.inha.capstonedesign.image.entity.MemberImage;
 import com.inha.capstonedesign.voting.entity.VotingRecord;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -63,6 +64,10 @@ public class Member implements UserDetails {
     @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.LAZY)
     private List<Role> roles = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "member_image_id")
+    private MemberImage memberImage;
 
     @OneToMany(mappedBy = "voter")
     private List<VotingRecord> votingRecords = new ArrayList<>();

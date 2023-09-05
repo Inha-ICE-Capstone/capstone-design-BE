@@ -1,6 +1,7 @@
 package com.inha.capstonedesign.voting.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.inha.capstonedesign.image.entity.CandidateImage;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,4 +29,8 @@ public class Candidate {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ballot_id")
     private Ballot ballot;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "candidate_image_id")
+    private CandidateImage candidateImage;
 }

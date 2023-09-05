@@ -1,5 +1,6 @@
 package com.inha.capstonedesign.voting.entity;
 
+import com.inha.capstonedesign.image.entity.BallotImage;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,4 +28,8 @@ public class Ballot {
 
     @OneToMany(mappedBy = "ballot")
     private List<VotingRecord> votingRecords = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "ballot_image_id")
+    private BallotImage ballotImage;
 }
