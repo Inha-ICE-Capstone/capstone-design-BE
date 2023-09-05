@@ -43,7 +43,8 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        return Arrays.stream(AUTH_WHITELIST).anyMatch(pattern -> antPathMatcher.match(pattern, path));
+        return Arrays.stream(AUTH_WHITELIST).anyMatch(pattern -> antPathMatcher.match(pattern, path) ||
+                (request.getMethod().equalsIgnoreCase("POST") && path.equals("/members")));
     }
 
     private String extractToken(String authenticationHeader) {

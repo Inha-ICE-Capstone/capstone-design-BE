@@ -8,6 +8,7 @@ import com.inha.capstonedesign.auth.jwt.handler.JwtExceptionHandlerFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -27,7 +28,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class WebSecurityConfig {
 
     private final JwtTokenUtil jwtTokenUtil;
-    public static final String[] AUTH_WHITELIST = {"/login", "/members", "/reissue", "/error", "/authority/**"};
+    public static final String[] AUTH_WHITELIST = {"/login", "/reissue", "/error", "/authority/**"};
 
     @Bean
     public AntPathMatcher antPathMatcher() {
@@ -57,6 +58,7 @@ public class WebSecurityConfig {
                 //jwt기반 stateless 인증을 하므로
                 .authorizeRequests()
                 .antMatchers(AUTH_WHITELIST).permitAll()
+                .antMatchers(HttpMethod.POST, "/members").permitAll()
                 .anyRequest().authenticated()
                 .and()
 
