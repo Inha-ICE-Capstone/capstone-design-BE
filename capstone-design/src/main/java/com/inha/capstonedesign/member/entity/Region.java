@@ -10,7 +10,7 @@ public enum Region {
     JEOLLABUK("전라북도"),
     JEOLLANAM("전라남도"),
     GYEONGSANGBUK("경상북도"),
-    GYEONGSANGNAM("경상북도");
+    GYEONGSANGNAM("경상남도");
 
     private String korean;
 
