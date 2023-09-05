@@ -86,6 +86,8 @@ public class Member implements UserDetails {
         this.memberGender = memberGender;
         this.memberRegion = memberRegion;
         this.roles.add(Role.ROLE_USER);
+
+        memberImage = MemberImage.createDefaultMemberImage();
     }
 
     public void setRoles(List<Role> roles) {
