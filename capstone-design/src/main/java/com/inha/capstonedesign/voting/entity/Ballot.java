@@ -1,11 +1,10 @@
 package com.inha.capstonedesign.voting.entity;
 
 import com.inha.capstonedesign.image.entity.BallotImage;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +22,12 @@ public class Ballot {
     @Column(name = "ballot_name")
     private String ballotName;
 
+    @Column(name = "ballot_start_date_time")
+    private LocalDateTime ballotStartDateTime;
+
+    @Column(name = "ballot_end_date_time")
+    private LocalDateTime ballotEndDateTime;
+
     @OneToMany(mappedBy = "ballot")
     private List<Candidate> candidates = new ArrayList<>();
 
@@ -31,5 +36,13 @@ public class Ballot {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "ballot_image_id")
+    @Setter
     private BallotImage ballotImage;
+
+    @Builder
+    public Ballot(String ballotName, LocalDateTime ballotStartDateTime, LocalDateTime ballotEndDateTime) {
+        this.ballotName = ballotName;
+        this.ballotStartDateTime = ballotStartDateTime;
+        this.ballotEndDateTime = ballotEndDateTime;
+    }
 }
