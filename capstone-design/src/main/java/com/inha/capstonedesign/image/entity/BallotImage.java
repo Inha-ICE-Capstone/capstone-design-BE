@@ -11,7 +11,9 @@ import javax.persistence.Table;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "ballot_image")
-public class BallotImage extends Image{
+public class BallotImage extends Image {
 
-
+    BallotImage(Image image) {
+        super(image);
+    }
 }
