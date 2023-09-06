@@ -1,13 +1,16 @@
 package com.inha.capstonedesign.voting.controller;
 
+import com.inha.capstonedesign.voting.dto.request.BallotRequestDto;
 import com.inha.capstonedesign.voting.dto.request.CandidateRequestDto;
 import com.inha.capstonedesign.voting.dto.request.VoteRequestDto;
 import com.inha.capstonedesign.voting.service.VotingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -25,9 +28,10 @@ public class VotingController {
         return ResponseEntity.ok(ballotList);
     }
 
-    @PostMapping("/ballots/{ballotName}")
-    public ResponseEntity<String> addBallot(@PathVariable String ballotName) {
-        votingService.addBallot(ballotName);
+    @PostMapping("/ballots")
+    public ResponseEntity<String> addBallot(@RequestPart @Valid BallotRequestDto ballotRequestDto,
+                                            @RequestPart MultipartFile ballotImage) throws IOException {
+        votingService.addBallot(ballotRequestDto, ballotImage);
 
         return ResponseEntity.ok(null);
     }
