@@ -48,7 +48,7 @@ public class ImageUploadService {
 
         String ext = extractExt(multipartFile.getOriginalFilename());
         int end = Math.min(multipartFile.getOriginalFilename().length(), 15);
-        String s3FileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename().substring(0, end) + "." + ext;
+        String s3FileName = UUID.randomUUID() + "-" + multipartFile.getOriginalFilename().substring(0, end);
         // s3에 저장되는 파일이름 중복안되게 하기
 
         //파일크기 용량제한 넘으면 예외 던지기
