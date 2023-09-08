@@ -33,7 +33,7 @@ public class MemberRequestDto {
         @NotNull
         private String memberRegion;
 
-        public Gender setEnumMemberGender(String gender) {
+        private Gender setEnumMemberGender(String gender) {
             if (gender.equals(Gender.MALE.getKorean())) {
                 return Gender.MALE;
             } else {
@@ -41,7 +41,7 @@ public class MemberRequestDto {
             }
         }
 
-        public Region setEnumMemberRegion(String region) {
+        private Region setEnumMemberRegion(String region) {
             if (region.equals(Region.GYEONGGI.getKorean())) {
                 return Region.GYEONGGI;
             } else if (region.equals(Region.GANGWON.getKorean())) {
