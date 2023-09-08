@@ -2,8 +2,6 @@ package com.inha.capstonedesign.voting.solidity;
 
 import com.inha.capstonedesign.global.web3j.GasProvider;
 import com.inha.capstonedesign.global.web3j.Web3jProperties;
-import com.inha.capstonedesign.image.ImageUploadService;
-import com.inha.capstonedesign.voting.repository.ballot.BallotRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
@@ -30,6 +28,7 @@ public class SolidityService {
         web3j = Web3j.build(new HttpService(web3jProperties.getRpcEndpointUrl()));
         votingContract = Voting.load(web3jProperties.getContractAddress(), web3j, credentials, gasProvider);
     }
+
     public List<String> getBallotListFromEth() {
         try {
             List<Voting.Ballot> ballotList = votingContract.getBallotList().send();

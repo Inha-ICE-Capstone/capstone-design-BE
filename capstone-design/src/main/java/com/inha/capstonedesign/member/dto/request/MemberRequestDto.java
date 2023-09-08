@@ -1,8 +1,8 @@
 package com.inha.capstonedesign.member.dto.request;
 
-import com.inha.capstonedesign.member.entity.Region;
 import com.inha.capstonedesign.member.entity.Gender;
 import com.inha.capstonedesign.member.entity.Member;
+import com.inha.capstonedesign.member.entity.Region;
 import lombok.Getter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 

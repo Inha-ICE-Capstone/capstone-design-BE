@@ -13,13 +13,13 @@ import java.util.TimeZone;
 @EnableJpaAuditing
 public class CapstoneDesignApplication {
 
-	@PostConstruct
-	public void timeZoneSetting() {
-		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
-	}
+    @PostConstruct
+    public void timeZoneSetting() {
+        TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(CapstoneDesignApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(CapstoneDesignApplication.class, args);
+    }
 
 }

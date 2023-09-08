@@ -48,23 +48,9 @@ public class VotingService {
         votingContract = Voting.load(web3jProperties.getContractAddress(), web3j, credentials, gasProvider);
     }
 
-    //public PageResponseDto<Voting.Ballot> getBallots
-
     public List<BallotResponseDto> getBallotList() {
         List<Ballot> ballots = ballotRepository.findAllByBallotStatusOrderByBallotEndDateTime(BallotStatus.NOT_STARTED);
         return ballots.stream().map(BallotResponseDto::of).collect(Collectors.toList());
-    }
-
-    public List<String> getBallotListFromEth() {
-        try {
-            List<Voting.Ballot> ballotList = votingContract.getBallotList().send();
-            List<String> ballotNameList = ballotList.stream().map(Voting.Ballot::getBallotName)
-                    .collect(Collectors.toList());
-            return ballotNameList;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     @Transactional

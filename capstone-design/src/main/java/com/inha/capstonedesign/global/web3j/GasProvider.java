@@ -1,7 +1,5 @@
 package com.inha.capstonedesign.global.web3j;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.web3j.tx.gas.ContractGasProvider;
 

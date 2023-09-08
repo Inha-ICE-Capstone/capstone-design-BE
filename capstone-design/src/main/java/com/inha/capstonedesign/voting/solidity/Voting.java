@@ -1,19 +1,8 @@
 package com.inha.capstonedesign.voting.solidity;
 
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.Callable;
-
 import lombok.Getter;
 import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.DynamicArray;
-import org.web3j.abi.datatypes.DynamicStruct;
-import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.Type;
-import org.web3j.abi.datatypes.Utf8String;
+import org.web3j.abi.datatypes.*;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.abi.datatypes.generated.Uint8;
 import org.web3j.abi.datatypes.reflection.Parameterized;
@@ -26,6 +15,13 @@ import org.web3j.tuples.generated.Tuple2;
 import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
+
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * <p>Auto generated code.
@@ -81,7 +77,9 @@ public class Voting extends Contract {
     public RemoteFunctionCall<Tuple2<BigInteger, String>> ballotList(BigInteger param0) {
         final Function function = new Function(FUNC_BALLOTLIST,
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(param0)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}, new TypeReference<Utf8String>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {
+                }, new TypeReference<Utf8String>() {
+                }));
         return new RemoteFunctionCall<Tuple2<BigInteger, String>>(function,
                 new Callable<Tuple2<BigInteger, String>>() {
                     @Override
@@ -105,7 +103,8 @@ public class Voting extends Contract {
     public RemoteFunctionCall<List> getCandidateList(BigInteger ballotId) {
         final Function function = new Function(FUNC_GETCANDIDATELIST,
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(ballotId)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<Candidate>>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<Candidate>>() {
+                }));
         return new RemoteFunctionCall<List>(function,
                 new Callable<List>() {
                     @Override
@@ -139,14 +138,16 @@ public class Voting extends Contract {
         final Function function = new Function(FUNC_GETVOTECOUNT,
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.generated.Uint256(ballotId),
                         new org.web3j.abi.datatypes.Utf8String(candidate)),
-                Arrays.<TypeReference<?>>asList(new TypeReference<Uint8>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint8>() {
+                }));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteFunctionCall<List> getBallotList() {
         final Function function = new Function(FUNC_GETBALLOTLIST,
                 Arrays.<Type>asList(),
-                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<Ballot>>() {}));
+                Arrays.<TypeReference<?>>asList(new TypeReference<DynamicArray<Ballot>>() {
+                }));
         return new RemoteFunctionCall<List>(function,
                 new Callable<List>() {
                     @Override

@@ -2,7 +2,10 @@ package com.inha.capstonedesign.member.entity;
 
 import com.inha.capstonedesign.image.entity.MemberImage;
 import com.inha.capstonedesign.voting.entity.VotingRecord;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

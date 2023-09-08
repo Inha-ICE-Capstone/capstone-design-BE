@@ -1,9 +1,7 @@
 package com.inha.capstonedesign.voting.repository.ballot;
 
-import com.inha.capstonedesign.image.entity.QBallotImage;
 import com.inha.capstonedesign.voting.entity.Ballot;
 import com.inha.capstonedesign.voting.entity.BallotStatus;
-import com.inha.capstonedesign.voting.entity.QBallot;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -15,14 +13,14 @@ import static com.inha.capstonedesign.voting.entity.QBallot.ballot;
 
 @RequiredArgsConstructor
 @Repository
-public class BallotQuerydslRepositoryImpl implements BallotQuerydslRepository{
+public class BallotQuerydslRepositoryImpl implements BallotQuerydslRepository {
 
     private final JPAQueryFactory queryFactory;
 
     @Override
     public List<Ballot> findAllByBallotStatusOrderByBallotEndDateTime(BallotStatus ballotStatus) {
         List<Ballot> ballots = queryFactory.selectFrom(ballot)
-                .join(ballot.ballotImage, ballotImage)
+                .leftJoin(ballot.ballotImage, ballotImage)
                 .fetchJoin()
                 .where(ballot.ballotStatus.eq(ballotStatus))
                 .orderBy(ballot.ballotEndDateTime.asc())

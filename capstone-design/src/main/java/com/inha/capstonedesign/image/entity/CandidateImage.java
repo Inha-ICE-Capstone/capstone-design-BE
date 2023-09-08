@@ -11,5 +11,5 @@ import javax.persistence.Table;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "candidate_image")
-public class CandidateImage extends Image{
+public class CandidateImage extends Image {
 }
