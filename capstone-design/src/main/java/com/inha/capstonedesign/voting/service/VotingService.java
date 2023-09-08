@@ -1,5 +1,6 @@
 package com.inha.capstonedesign.voting.service;
 
+import com.inha.capstonedesign.global.response.PageResponseDto;
 import com.inha.capstonedesign.global.web3j.GasProvider;
 import com.inha.capstonedesign.global.web3j.Web3jProperties;
 import com.inha.capstonedesign.image.ImageUploadService;
@@ -9,10 +10,12 @@ import com.inha.capstonedesign.voting.dto.request.CandidateRequestDto;
 import com.inha.capstonedesign.voting.dto.request.VoteRequestDto;
 import com.inha.capstonedesign.voting.dto.response.BallotResponseDto;
 import com.inha.capstonedesign.voting.entity.Ballot;
-import com.inha.capstonedesign.voting.entity.BallotStatus;
 import com.inha.capstonedesign.voting.repository.ballot.BallotRepository;
 import com.inha.capstonedesign.voting.solidity.Voting;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,9 +51,10 @@ public class VotingService {
         votingContract = Voting.load(web3jProperties.getContractAddress(), web3j, credentials, gasProvider);
     }
 
-    public List<BallotResponseDto> getBallotList() {
-        List<Ballot> ballots = ballotRepository.findAllByBallotStatusOrderByBallotEndDateTime(BallotStatus.NOT_STARTED);
-        return ballots.stream().map(BallotResponseDto::of).collect(Collectors.toList());
+    public PageResponseDto<BallotResponseDto.Page> getBallotResponse(Pageable pageable, String status) {
+        Page<Ballot> ballots = ballotRepository.findAllByBallotStatusOrderByBallotEndDateTime(pageable, status);
+        List<BallotResponseDto.Page> ballotResponseDtos = ballots.getContent().stream().map(BallotResponseDto.Page::of).collect(Collectors.toList());
+        return new PageResponseDto<>(new PageImpl<>(ballotResponseDtos, pageable, ballots.getTotalElements()));
     }
 
     @Transactional

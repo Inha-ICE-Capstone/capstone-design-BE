@@ -1,11 +1,13 @@
 package com.inha.capstonedesign.voting.controller;
 
+import com.inha.capstonedesign.global.response.PageResponseDto;
 import com.inha.capstonedesign.voting.dto.request.BallotRequestDto;
 import com.inha.capstonedesign.voting.dto.request.CandidateRequestDto;
 import com.inha.capstonedesign.voting.dto.request.VoteRequestDto;
 import com.inha.capstonedesign.voting.dto.response.BallotResponseDto;
 import com.inha.capstonedesign.voting.service.VotingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +17,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 
+import static com.inha.capstonedesign.global.config.PageSizeConfig.BALLOT_PAGE_SIZE;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/voting")
@@ -23,10 +27,17 @@ public class VotingController {
     private final VotingService votingService;
 
     @GetMapping("/ballots")
-    public ResponseEntity<List<BallotResponseDto>> getBallotList() {
-        List<BallotResponseDto> ballotList = votingService.getBallotList();
+    public ResponseEntity<PageResponseDto<BallotResponseDto.Page>> getBallotList(
+            @RequestParam(required = false, defaultValue = "1") int page,
+            @RequestParam(required = false, defaultValue = "진행중") String status) {
+        if (page < 1) {
+            page = 1;
+        }
 
-        return ResponseEntity.ok(ballotList);
+        PageRequest pageRequest = PageRequest.of(page - 1, BALLOT_PAGE_SIZE);
+        PageResponseDto<BallotResponseDto.Page> ballotResponse = votingService.getBallotResponse(pageRequest, status);
+
+        return ResponseEntity.ok(ballotResponse);
     }
 
     @PostMapping("/ballots")
