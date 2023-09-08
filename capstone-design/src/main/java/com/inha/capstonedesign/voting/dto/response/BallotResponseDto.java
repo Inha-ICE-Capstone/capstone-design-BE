@@ -1,13 +1,10 @@
 package com.inha.capstonedesign.voting.dto.response;
 
 import com.inha.capstonedesign.voting.entity.Ballot;
-import com.inha.capstonedesign.voting.entity.Candidate;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 public class BallotResponseDto {
@@ -22,13 +19,11 @@ public class BallotResponseDto {
         private String ballotSubjectRegion;
         private String ballotSubjectGender;
         private String ballotBriefDescription;
-        private String ballotDetailDescription;
-        private List<Candidate> candidates = new ArrayList<>();
         private String ballotImage;
         private String ballotStatus;
 
         @Builder
-        public Page(String ballotName, LocalDateTime ballotStartDateTime, LocalDateTime ballotEndDateTime, Integer ballotMinAge, Integer ballotMaxAge, String ballotSubjectRegion, String ballotSubjectGender, String ballotBriefDescription, String ballotDetailDescription, List<Candidate> candidates, String ballotImage, String ballotStatus) {
+        public Page(String ballotName, LocalDateTime ballotStartDateTime, LocalDateTime ballotEndDateTime, Integer ballotMinAge, Integer ballotMaxAge, String ballotSubjectRegion, String ballotSubjectGender, String ballotBriefDescription, String ballotImage, String ballotStatus) {
             this.ballotName = ballotName;
             this.ballotStartDateTime = ballotStartDateTime;
             this.ballotEndDateTime = ballotEndDateTime;
@@ -37,8 +32,6 @@ public class BallotResponseDto {
             this.ballotSubjectRegion = ballotSubjectRegion;
             this.ballotSubjectGender = ballotSubjectGender;
             this.ballotBriefDescription = ballotBriefDescription;
-            this.ballotDetailDescription = ballotDetailDescription;
-            this.candidates.addAll(candidates);
             this.ballotImage = ballotImage;
             this.ballotStatus = ballotStatus;
         }
@@ -51,8 +44,6 @@ public class BallotResponseDto {
                     .ballotMinAge(ballot.getBallotMinAge())
                     .ballotMaxAge(ballot.getBallotMaxAge())
                     .ballotBriefDescription(ballot.getBallotBriefDescription())
-                    .ballotDetailDescription(ballot.getBallotDetailDescription())
-                    .candidates(ballot.getCandidates())
                     .ballotStatus(ballot.getBallotStatus().getKorean());
 
             if (ballot.getBallotSubjectRegion() != null) {
