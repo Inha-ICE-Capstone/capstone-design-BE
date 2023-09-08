@@ -7,8 +7,10 @@ import com.inha.capstonedesign.image.entity.Image;
 import com.inha.capstonedesign.voting.dto.request.BallotRequestDto;
 import com.inha.capstonedesign.voting.dto.request.CandidateRequestDto;
 import com.inha.capstonedesign.voting.dto.request.VoteRequestDto;
+import com.inha.capstonedesign.voting.dto.response.BallotResponseDto;
 import com.inha.capstonedesign.voting.entity.Ballot;
-import com.inha.capstonedesign.voting.repository.BallotRepository;
+import com.inha.capstonedesign.voting.entity.BallotStatus;
+import com.inha.capstonedesign.voting.repository.ballot.BallotRepository;
 import com.inha.capstonedesign.voting.solidity.Voting;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,7 +48,14 @@ public class VotingService {
         votingContract = Voting.load(web3jProperties.getContractAddress(), web3j, credentials, gasProvider);
     }
 
-    public List<String> getBallotList() {
+    //public PageResponseDto<Voting.Ballot> getBallots
+
+    public List<BallotResponseDto> getBallotList() {
+        List<Ballot> ballots = ballotRepository.findAllByBallotStatusOrderByBallotEndDateTime(BallotStatus.NOT_STARTED);
+        return ballots.stream().map(BallotResponseDto::of).collect(Collectors.toList());
+    }
+
+    public List<String> getBallotListFromEth() {
         try {
             List<Voting.Ballot> ballotList = votingContract.getBallotList().send();
             List<String> ballotNameList = ballotList.stream().map(Voting.Ballot::getBallotName)

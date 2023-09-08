@@ -3,6 +3,7 @@ package com.inha.capstonedesign.voting.controller;
 import com.inha.capstonedesign.voting.dto.request.BallotRequestDto;
 import com.inha.capstonedesign.voting.dto.request.CandidateRequestDto;
 import com.inha.capstonedesign.voting.dto.request.VoteRequestDto;
+import com.inha.capstonedesign.voting.dto.response.BallotResponseDto;
 import com.inha.capstonedesign.voting.service.VotingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,8 @@ public class VotingController {
     private final VotingService votingService;
 
     @GetMapping("/ballots")
-    public ResponseEntity<List<String>> getBallotList() {
-        List<String> ballotList = votingService.getBallotList();
+    public ResponseEntity<List<BallotResponseDto>> getBallotList() {
+        List<BallotResponseDto> ballotList = votingService.getBallotList();
 
         return ResponseEntity.ok(ballotList);
     }
