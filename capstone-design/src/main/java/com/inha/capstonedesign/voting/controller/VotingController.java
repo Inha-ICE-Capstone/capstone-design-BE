@@ -40,6 +40,11 @@ public class VotingController {
         return ResponseEntity.ok(ballotResponse);
     }
 
+    @GetMapping("/ballots/{ballotId}")
+    public ResponseEntity<BallotResponseDto.Detail> getBallotDetail(@PathVariable Long ballotId) {
+        return ResponseEntity.ok(votingService.getBallotDetail(ballotId));
+    }
+
     @PostMapping("/ballots")
     public ResponseEntity<String> addBallot(@RequestPart @Valid BallotRequestDto ballotRequestDto,
                                             @RequestPart MultipartFile ballotImage) throws IOException {

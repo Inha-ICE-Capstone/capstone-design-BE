@@ -10,6 +10,8 @@ import com.inha.capstonedesign.voting.dto.request.CandidateRequestDto;
 import com.inha.capstonedesign.voting.dto.request.VoteRequestDto;
 import com.inha.capstonedesign.voting.dto.response.BallotResponseDto;
 import com.inha.capstonedesign.voting.entity.Ballot;
+import com.inha.capstonedesign.voting.exception.VotingException;
+import com.inha.capstonedesign.voting.exception.VotingExceptionType;
 import com.inha.capstonedesign.voting.repository.ballot.BallotRepository;
 import com.inha.capstonedesign.voting.solidity.Voting;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +57,12 @@ public class VotingService {
         Page<Ballot> ballots = ballotRepository.findAllByBallotStatusOrderByBallotEndDateTime(pageable, status);
         List<BallotResponseDto.Page> ballotResponseDtos = ballots.getContent().stream().map(BallotResponseDto.Page::of).collect(Collectors.toList());
         return new PageResponseDto<>(new PageImpl<>(ballotResponseDtos, pageable, ballots.getTotalElements()));
+    }
+
+    public BallotResponseDto.Detail getBallotDetail(Long ballotId) {
+        Ballot ballot = ballotRepository.findByBallotId(ballotId)
+                .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
+        return BallotResponseDto.Detail.of(ballot);
     }
 
     @Transactional
