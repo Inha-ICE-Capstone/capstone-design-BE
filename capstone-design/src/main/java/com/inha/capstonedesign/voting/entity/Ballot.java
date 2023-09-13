@@ -6,6 +6,7 @@ import com.inha.capstonedesign.member.entity.Region;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,11 +28,11 @@ public class Ballot {
     private String ballotName;
 
     @Column(name = "ballot_start_date_time")
-    @NotNull
+    @Future
     private LocalDateTime ballotStartDateTime;
 
     @Column(name = "ballot_end_date_time")
-    @NotNull
+    @Future
     private LocalDateTime ballotEndDateTime;
 
     @Column(name = "ballot_min_age")

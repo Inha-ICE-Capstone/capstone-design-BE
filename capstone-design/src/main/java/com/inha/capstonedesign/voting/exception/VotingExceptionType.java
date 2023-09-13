@@ -7,7 +7,8 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum VotingExceptionType implements CustomExceptionType {
 
-    BALLOT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "V001", "존재하지 않는 투표입니다");
+    BALLOT_END_TIME_BEFORE_START_TIME(HttpStatus.BAD_REQUEST, "V001", "투표 종료일이 시작일 이전입니다"),
+    BALLOT_NOT_EXISTS(HttpStatus.BAD_REQUEST, "V002", "존재하지 않는 투표입니다");
 
     private final HttpStatus httpStatus;
     private final String code;
