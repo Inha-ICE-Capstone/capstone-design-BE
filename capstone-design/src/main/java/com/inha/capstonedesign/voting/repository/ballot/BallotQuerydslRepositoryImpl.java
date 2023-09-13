@@ -35,10 +35,10 @@ public class BallotQuerydslRepositoryImpl implements BallotQuerydslRepository {
                 .orderBy(ballot.ballotEndDateTime.asc())
                 .fetch();
 
-        long total = queryFactory.select(Wildcard.count)
+        Long total = queryFactory.select(Wildcard.count)
                 .from(ballot)
                 .where(ballot.ballotStatus.eq(ballotStatus))
-                .fetch().get(0);
+                .fetchOne();
 
         return new PageImpl<>(content, pageable, total);
     }
