@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.inha.capstonedesign.image.entity.QBallotImage.ballotImage;
@@ -41,6 +42,25 @@ public class BallotQuerydslRepositoryImpl implements BallotQuerydslRepository {
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, total);
+    }
+
+    @Override
+    public List<Ballot> findNotStartedBallotsAfterStartTime() {
+
+        LocalDateTime now = LocalDateTime.now();
+
+        return queryFactory.selectFrom(ballot)
+                .where(ballot.ballotStartDateTime.before(now), ballot.ballotStatus.eq(BallotStatus.NOT_STARTED))
+                .fetch();
+    }
+
+    @Override
+    public List<Ballot> findInProgressBallotsAfterEndTime() {
+        LocalDateTime now = LocalDateTime.now();
+
+        return queryFactory.selectFrom(ballot)
+                .where(ballot.ballotEndDateTime.before(now), ballot.ballotStatus.eq(BallotStatus.IN_PROGRESS))
+                .fetch();
     }
 
     private static BallotStatus getBallotStatusFromString(String status) {

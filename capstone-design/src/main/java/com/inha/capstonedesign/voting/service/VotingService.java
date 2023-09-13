@@ -10,6 +10,7 @@ import com.inha.capstonedesign.voting.dto.request.CandidateRequestDto;
 import com.inha.capstonedesign.voting.dto.request.VoteRequestDto;
 import com.inha.capstonedesign.voting.dto.response.BallotResponseDto;
 import com.inha.capstonedesign.voting.entity.Ballot;
+import com.inha.capstonedesign.voting.entity.BallotStatus;
 import com.inha.capstonedesign.voting.exception.VotingException;
 import com.inha.capstonedesign.voting.exception.VotingExceptionType;
 import com.inha.capstonedesign.voting.repository.ballot.BallotRepository;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -68,6 +70,9 @@ public class VotingService {
     @Transactional
     public void addBallot(BallotRequestDto ballotRequestDto, MultipartFile ballotImage) throws IOException {
         try {
+            if (ballotRequestDto.getBallotEndDateTime().isBefore(ballotRequestDto.getBallotStartDateTime())) {
+                throw new VotingException(VotingExceptionType.BALLOT_END_TIME_BEFORE_START_TIME);
+            }
             votingContract.addBallot(ballotRequestDto.getBallotName()).send();
             Ballot ballot = ballotRequestDto.toEntity();
 
@@ -116,5 +121,19 @@ public class VotingService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Scheduled(cron = "0 0 * * * ?")
+    //정각 매 1시간마다로 설정
+    //매 10초마다 같은 경우엔 0/10 * * 이런식으로
+    @Transactional
+    public void votingSchedule() {
+        List<Ballot> notStartedBallots = ballotRepository.findNotStartedBallotsAfterStartTime();
+        List<Ballot> inProgressBallots = ballotRepository.findInProgressBallotsAfterEndTime();
+
+        notStartedBallots.stream()
+                .forEach(ballot -> ballot.changeBallotStatus(BallotStatus.IN_PROGRESS));
+        inProgressBallots.stream()
+                .forEach(ballot -> ballot.changeBallotStatus(BallotStatus.CLOSED));
     }
 }
