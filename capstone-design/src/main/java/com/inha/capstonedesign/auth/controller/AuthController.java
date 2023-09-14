@@ -77,11 +77,4 @@ public class AuthController {
 
         return ResponseEntity.ok(null);
     }
-
-    @PostMapping("/authority/{memberEmail}")
-    public ResponseEntity<String> upgradeAuthority(@PathVariable String memberEmail) {
-        authService.upgradeAuthority(memberEmail);
-
-        return ResponseEntity.ok(null);
-    }
 }
