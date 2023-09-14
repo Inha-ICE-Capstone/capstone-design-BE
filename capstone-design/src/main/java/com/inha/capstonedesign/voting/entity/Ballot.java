@@ -28,11 +28,9 @@ public class Ballot {
     private String ballotName;
 
     @Column(name = "ballot_start_date_time")
-    @Future
     private LocalDateTime ballotStartDateTime;
 
     @Column(name = "ballot_end_date_time")
-    @Future
     private LocalDateTime ballotEndDateTime;
 
     @Column(name = "ballot_min_age")
