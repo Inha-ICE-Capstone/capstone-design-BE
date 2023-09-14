@@ -17,7 +17,7 @@ contract Voting {
 
     function addBallot(string memory ballotName) public {
 
-        uint id = ballotList.length;
+        uint id = ballotList.length + 1;
         Ballot storage b = ballotList.push();
 
         b.ballotId = id;
