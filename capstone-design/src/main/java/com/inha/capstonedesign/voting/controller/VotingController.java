@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.List;
 
 import static com.inha.capstonedesign.global.config.PageSizeConfig.BALLOT_PAGE_SIZE;
 
@@ -43,21 +42,6 @@ public class VotingController {
     @GetMapping("/ballots/{ballotId}")
     public ResponseEntity<BallotResponseDto.Detail> getBallotDetail(@PathVariable Long ballotId) {
         return ResponseEntity.ok(votingService.getBallotDetail(ballotId));
-    }
-
-    @PostMapping("/ballots")
-    public ResponseEntity<String> addBallot(@RequestPart @Valid BallotRequestDto ballotRequestDto,
-                                            @RequestPart MultipartFile ballotImage) throws IOException {
-        votingService.addBallot(ballotRequestDto, ballotImage);
-
-        return ResponseEntity.ok(null);
-    }
-
-    @PostMapping("/candidates")
-    public ResponseEntity<String> addCandidate(@RequestBody @Valid CandidateRequestDto candidateDto) {
-        votingService.addCandidate(candidateDto);
-
-        return ResponseEntity.ok(null);
     }
 
     @GetMapping("/vote-count")
