@@ -84,19 +84,6 @@ public class VotingService {
         }
     }
 
-    public List<String> getCandidateList(Integer ballotId) {
-        try {
-
-            List<Voting.Candidate> send = votingContract.getCandidateList(BigInteger.valueOf(ballotId)).send();
-            List<String> candidateNameList = send.stream().map(Voting.Candidate::getName)
-                    .collect(Collectors.toList());
-            return candidateNameList;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
-    }
-
     public void addCandidate(CandidateRequestDto candidateDto) {
         try {
             votingContract.addCandidate(BigInteger.valueOf(candidateDto.getBallotId()), candidateDto.getCandidateName()).send();

@@ -53,11 +53,6 @@ public class VotingController {
         return ResponseEntity.ok(null);
     }
 
-    @GetMapping("/candidates/{ballotId}")
-    public ResponseEntity<List<String>> getCandidateList(@PathVariable Integer ballotId) {
-        return ResponseEntity.ok(votingService.getCandidateList(ballotId));
-    }
-
     @PostMapping("/candidates")
     public ResponseEntity<String> addCandidate(@RequestBody @Valid CandidateRequestDto candidateDto) {
         votingService.addCandidate(candidateDto);

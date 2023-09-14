@@ -9,6 +9,8 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 
 import javax.annotation.PostConstruct;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,5 +41,17 @@ public class SolidityService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<String> getCandidateListFromEth(Integer ballotId) {
+        try {
+            List<Voting.Candidate> send = votingContract.getCandidateList(BigInteger.valueOf(ballotId)).send();
+            List<String> candidateNameList = send.stream().map(Voting.Candidate::getName)
+                    .collect(Collectors.toList());
+            return candidateNameList;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 }
