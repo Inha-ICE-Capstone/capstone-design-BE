@@ -8,6 +8,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class BallotResponseDto {
@@ -73,7 +74,7 @@ public class BallotResponseDto {
         private String ballotSubjectGender;
         private String ballotBriefDescription;
         private String ballotDetailDescription;
-        private List<Candidate> candidates = new ArrayList<>();
+        private List<CandidateResponseDto.Detail> candidates = new ArrayList<>();
         private String ballotImage;
         private String ballotStatus;
 
@@ -88,13 +89,15 @@ public class BallotResponseDto {
             this.ballotSubjectGender = ballotSubjectGender;
             this.ballotBriefDescription = ballotBriefDescription;
             this.ballotDetailDescription = ballotDetailDescription;
-            this.candidates.addAll(candidates);
+            this.candidates.addAll(
+                    candidates.stream().map(CandidateResponseDto.Detail::of).collect(Collectors.toList()));
             this.ballotImage = ballotImage;
             this.ballotStatus = ballotStatus;
         }
 
         public static Detail of(Ballot ballot) {
-            Detail.DetailBuilder ballotResponseDtoBuilder = Detail.builder()
+
+            Detail.DetailBuilder detailBuilder = Detail.builder()
                     .ballotName(ballot.getBallotName())
                     .ballotStartDateTime(ballot.getBallotStartDateTime())
                     .ballotEndDateTime(ballot.getBallotEndDateTime())
@@ -106,15 +109,15 @@ public class BallotResponseDto {
                     .ballotStatus(ballot.getBallotStatus().getKorean());
 
             if (ballot.getBallotSubjectRegion() != null) {
-                ballotResponseDtoBuilder.ballotSubjectRegion(ballot.getBallotSubjectRegion().getKorean());
+                detailBuilder.ballotSubjectRegion(ballot.getBallotSubjectRegion().getKorean());
             }
             if (ballot.getBallotSubjectGender() != null) {
-                ballotResponseDtoBuilder.ballotSubjectGender(ballot.getBallotSubjectGender().getKorean());
+                detailBuilder.ballotSubjectGender(ballot.getBallotSubjectGender().getKorean());
             }
             if (ballot.getBallotImage() != null) {
-                ballotResponseDtoBuilder.ballotImage(ballot.getBallotImage().getImagePath());
+                detailBuilder.ballotImage(ballot.getBallotImage().getImagePath());
             }
-            return ballotResponseDtoBuilder.build();
+            return detailBuilder.build();
         }
     }
 }
