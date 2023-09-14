@@ -59,6 +59,7 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 .antMatchers(AUTH_WHITELIST).permitAll()
                 .antMatchers(HttpMethod.POST, "/members").permitAll()
+                .antMatchers("/admins/**").hasAnyRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
 
