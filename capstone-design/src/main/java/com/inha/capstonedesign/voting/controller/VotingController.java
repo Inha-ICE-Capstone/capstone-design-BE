@@ -1,19 +1,17 @@
 package com.inha.capstonedesign.voting.controller;
 
 import com.inha.capstonedesign.global.response.PageResponseDto;
-import com.inha.capstonedesign.voting.dto.request.BallotRequestDto;
-import com.inha.capstonedesign.voting.dto.request.CandidateRequestDto;
+import com.inha.capstonedesign.member.dto.request.MemberRequestDto;
 import com.inha.capstonedesign.voting.dto.request.VoteRequestDto;
 import com.inha.capstonedesign.voting.dto.response.BallotResponseDto;
 import com.inha.capstonedesign.voting.service.VotingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.math.BigInteger;
 
 import static com.inha.capstonedesign.global.config.PageSizeConfig.BALLOT_PAGE_SIZE;
@@ -51,8 +49,10 @@ public class VotingController {
 
 
     @PostMapping
-    public ResponseEntity<String> vote(@RequestBody @Valid VoteRequestDto voteDto) {
-        votingService.vote(voteDto);
+    public ResponseEntity<String> vote(@RequestBody @Valid VoteRequestDto voteDto,
+                                       @AuthenticationPrincipal MemberRequestDto.Access access) {
+        votingService.verifyAndUpdateVotingRecordStatus(voteDto, access);
+        votingService.vote(voteDto, access);
 
         return ResponseEntity.ok(null);
     }

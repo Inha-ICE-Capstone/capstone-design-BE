@@ -1,20 +1,30 @@
 package com.inha.capstonedesign.voting.service;
 
+import com.inha.capstonedesign.auth.exception.AuthException;
+import com.inha.capstonedesign.auth.exception.AuthExceptionType;
 import com.inha.capstonedesign.global.response.PageResponseDto;
 import com.inha.capstonedesign.global.web3j.GasProvider;
 import com.inha.capstonedesign.global.web3j.Web3jProperties;
 import com.inha.capstonedesign.image.ImageUploadService;
 import com.inha.capstonedesign.image.entity.Image;
+import com.inha.capstonedesign.member.dto.request.MemberRequestDto;
+import com.inha.capstonedesign.member.entity.Member;
+import com.inha.capstonedesign.member.repository.MemberRepository;
 import com.inha.capstonedesign.voting.dto.request.BallotRequestDto;
 import com.inha.capstonedesign.voting.dto.request.CandidateRequestDto;
 import com.inha.capstonedesign.voting.dto.request.VoteRequestDto;
 import com.inha.capstonedesign.voting.dto.response.BallotResponseDto;
-import com.inha.capstonedesign.voting.entity.Ballot;
-import com.inha.capstonedesign.voting.entity.BallotStatus;
-import com.inha.capstonedesign.voting.entity.Candidate;
+import com.inha.capstonedesign.voting.entity.*;
+import com.inha.capstonedesign.voting.entity.analysis.age.AgeGroupVotingAnalysis;
+import com.inha.capstonedesign.voting.entity.analysis.gender.GenderVotingAnalysis;
+import com.inha.capstonedesign.voting.entity.analysis.region.RegionVotingAnalysis;
 import com.inha.capstonedesign.voting.exception.VotingException;
 import com.inha.capstonedesign.voting.exception.VotingExceptionType;
 import com.inha.capstonedesign.voting.repository.CandidateRepository;
+import com.inha.capstonedesign.voting.repository.VotingRecordRepository;
+import com.inha.capstonedesign.voting.repository.analysis.AgeGroupVotingAnalysisRepository;
+import com.inha.capstonedesign.voting.repository.analysis.GenderVotingAnalysisRepository;
+import com.inha.capstonedesign.voting.repository.analysis.RegionVotingAnalysisRepository;
 import com.inha.capstonedesign.voting.repository.ballot.BallotRepository;
 import com.inha.capstonedesign.voting.solidity.Voting;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +43,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,8 +57,15 @@ public class VotingService {
     private Web3j web3j;
     private Voting votingContract;
 
+    private final MemberRepository memberRepository;
     private final BallotRepository ballotRepository;
     private final CandidateRepository candidateRepository;
+    private final VotingRecordRepository votingRecordRepository;
+
+    private final AgeGroupVotingAnalysisRepository ageGroupRepository;
+    private final GenderVotingAnalysisRepository genderRepository;
+    private final RegionVotingAnalysisRepository regionRepository;
+
     private final ImageUploadService imageUploadService;
 
     @PostConstruct
@@ -107,19 +125,66 @@ public class VotingService {
     }
 
     public BigInteger getVoteCount(VoteRequestDto voteDto) {
-        try {
-            BigInteger voteCount = votingContract.getVoteCount(BigInteger.valueOf(voteDto.getBallotId()), voteDto.getCandidateName()).send();
-            return voteCount;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            BigInteger voteCount = votingContract.getVoteCount(BigInteger.valueOf(voteDto.getBallotId()), voteDto.getCandidateName()).send();
+//            return voteCount;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         return BigInteger.valueOf(-9999L);
     }
 
-    public void vote(VoteRequestDto voteDto) {
+    @Transactional
+    public void verifyAndUpdateVotingRecordStatus(VoteRequestDto voteDto, MemberRequestDto.Access access) {
+        Member member = memberRepository.findByMemberEmail(access.getEmail())
+                .orElseThrow(() -> new AuthException(AuthExceptionType.ACCOUNT_NOT_EXISTS));
+
+        Ballot ballot = ballotRepository.findByBallotId(voteDto.getBallotId())
+                .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
+
+        if (!verifySubject(member, ballot)) {
+            throw new VotingException(VotingExceptionType.NOT_SUBJECT);
+        }
+
+        Optional<VotingRecord> votingRecord = votingRecordRepository.findByVoterAndBallot(member, ballot);
+
+        if (votingRecord.isPresent()) {
+            if (votingRecord.get().getVotingRecordStatus().equals(VotingRecordStatus.IN_PROGRESS)) {
+                throw new VotingException(VotingExceptionType.VOTING_IN_PROGRESS);
+            } else if (votingRecord.get().getVotingRecordStatus().equals(VotingRecordStatus.COMPLETED)) {
+                throw new VotingException(VotingExceptionType.ALREADY_VOTED);
+            } else if (votingRecord.get().getVotingRecordStatus().equals(VotingRecordStatus.CANCELLED_ERROR)) {
+                votingRecordRepository.delete(votingRecord.get());
+            }
+        }
+        votingRecordRepository.save(new VotingRecord(member, ballot));
+    }
+
+    @Transactional
+    public void vote(VoteRequestDto voteDto, MemberRequestDto.Access access) {
+        Member member = memberRepository.findByMemberEmail(access.getEmail())
+                .orElseThrow(() -> new AuthException(AuthExceptionType.ACCOUNT_NOT_EXISTS));
+
+        Ballot ballot = ballotRepository.findByBallotId(voteDto.getBallotId())
+                .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
+
+        VotingRecord votingRecord = votingRecordRepository.findByVoterAndBallot(member, ballot)
+                .orElseThrow(() -> new VotingException(VotingExceptionType.UNKNOWN_ERROR));
+
         try {
-            votingContract.voteForCandidate(BigInteger.valueOf(voteDto.getBallotId()), voteDto.getCandidateName()).send();
+            Candidate candidate = candidateRepository.findByCandidateId(voteDto.getCandidateId())
+                    .orElseThrow(() -> new VotingException(VotingExceptionType.CANDIDATE_NOT_EXISTS));
+
+            votingContract.voteForCandidate(BigInteger.valueOf(voteDto.getBallotId()), candidate.getCandidateName()).send();
+            candidate.incrementCandidateVoteCount();
+            votingRecord.changeVotingRecordStatus(VotingRecordStatus.COMPLETED);
+
+            ageGroupRepository.save(new AgeGroupVotingAnalysis(member.getAgeGroup(), candidate));
+            genderRepository.save(new GenderVotingAnalysis(member.getMemberGender(), candidate));
+            regionRepository.save(new RegionVotingAnalysis(member.getMemberRegion(), candidate));
+
         } catch (Exception e) {
+            votingRecord.changeVotingRecordStatus(VotingRecordStatus.CANCELLED_ERROR);
             e.printStackTrace();
         }
     }
@@ -136,5 +201,29 @@ public class VotingService {
                 .forEach(ballot -> ballot.changeBallotStatus(BallotStatus.IN_PROGRESS));
         inProgressBallots.stream()
                 .forEach(ballot -> ballot.changeBallotStatus(BallotStatus.CLOSED));
+    }
+
+    private boolean verifySubject(Member member, Ballot ballot) {
+        if (ballot.getBallotMinAge() != null) {
+            if (member.getMemberAge() < ballot.getBallotMinAge()) {
+                return false;
+            }
+        }
+        if (ballot.getBallotMaxAge() != null) {
+            if (member.getMemberAge() > ballot.getBallotMaxAge()) {
+                return false;
+            }
+        }
+        if (ballot.getBallotSubjectRegion() != null) {
+            if (!member.getMemberRegion().equals(ballot.getBallotSubjectRegion())) {
+                return false;
+            }
+        }
+        if (ballot.getBallotSubjectGender() != null) {
+            if (!member.getMemberGender().equals(ballot.getBallotSubjectGender())) {
+                return false;
+            }
+        }
+        return true;
     }
 }

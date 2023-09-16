@@ -25,4 +25,9 @@ public class AgeGroupVotingAnalysis {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "candidate_id")
     private Candidate candidate;
+
+    public AgeGroupVotingAnalysis(AgeGroup ageGroup, Candidate candidate) {
+        this.ageGroup = ageGroup;
+        this.candidate = candidate;
+    }
 }

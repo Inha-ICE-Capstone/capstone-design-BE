@@ -40,6 +40,10 @@ public class Candidate {
     @Setter
     private CandidateImage candidateImage;
 
+    public void incrementCandidateVoteCount() {
+        this.candidateVoteCount++;
+    }
+
     public Candidate(String candidateName) {
         this.candidateName = candidateName;
     }

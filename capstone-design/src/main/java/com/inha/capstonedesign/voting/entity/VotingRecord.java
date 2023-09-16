@@ -32,5 +32,13 @@ public class VotingRecord extends BaseEntity {
 
     @Column(name = "voting_record_status")
     @Enumerated(EnumType.STRING)
-    VotingRecordStatus votingRecordStatus;
+    VotingRecordStatus votingRecordStatus = VotingRecordStatus.IN_PROGRESS;
+
+    public void changeVotingRecordStatus(VotingRecordStatus votingRecordStatus){
+        this.votingRecordStatus = votingRecordStatus;
+    }
+    public VotingRecord(Member voter, Ballot ballot) {
+        this.voter = voter;
+        this.ballot = ballot;
+    }
 }

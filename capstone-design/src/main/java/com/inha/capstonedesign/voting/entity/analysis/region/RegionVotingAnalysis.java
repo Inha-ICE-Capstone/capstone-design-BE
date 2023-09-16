@@ -25,4 +25,9 @@ public class RegionVotingAnalysis {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "candidate_id")
     private Candidate candidate;
+
+    public RegionVotingAnalysis(Region region, Candidate candidate) {
+        this.region = region;
+        this.candidate = candidate;
+    }
 }
