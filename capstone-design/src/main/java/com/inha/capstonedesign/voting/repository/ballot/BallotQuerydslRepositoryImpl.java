@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static com.inha.capstonedesign.image.entity.QBallotImage.ballotImage;
 import static com.inha.capstonedesign.voting.entity.QBallot.ballot;
@@ -21,6 +22,16 @@ import static com.inha.capstonedesign.voting.entity.QBallot.ballot;
 public class BallotQuerydslRepositoryImpl implements BallotQuerydslRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public Optional<Ballot> findByBallotIdWithImage(Long ballotId) {
+        return queryFactory.selectFrom(ballot)
+                .leftJoin(ballot.ballotImage, ballotImage)
+                .fetchJoin()
+                .where(ballot.ballotId.eq(ballotId))
+                .fetch()
+                .stream().findAny();
+    }
 
     @Override
     public Page<Ballot> findAllByBallotStatusOrderByBallotEndDateTime(Pageable pageable, String status) {
