@@ -26,13 +26,13 @@ contract Voting {
 
     function getCandidateList(uint256 ballotId) public view returns (Candidate[] memory) {
         require(ballotExists(ballotId), "Ballot does not exist");
-        Ballot storage ballot = ballotList[ballotId];
+        Ballot storage ballot = ballotList[ballotId - 1];
         return ballot.candidateList;
     }
 
     function addCandidate(uint256 ballotId, string memory candidateName) public {
         require(ballotExists(ballotId), "Ballot does not exist");
-        Ballot storage ballot = ballotList[ballotId];
+        Ballot storage ballot = ballotList[ballotId - 1];
 
         require(!candidateExists(ballot, candidateName), "Candidate already exists");
 
@@ -51,7 +51,7 @@ contract Voting {
 
     function voteForCandidate(uint256 ballotId, string memory candidate) public {
         require(ballotExists(ballotId), "Ballot does not exist");
-        Ballot storage ballot = ballotList[ballotId];
+        Ballot storage ballot = ballotList[ballotId - 1];
         uint256 candidateIndex = findCandidateIndex(ballot, candidate);
         require(candidateIndex != type(uint256).max, "Candidate does not exist");
 
@@ -60,7 +60,7 @@ contract Voting {
 
     function getVoteCount(uint256 ballotId, string memory candidate) public view returns (uint8) {
         require(ballotExists(ballotId), "Ballot does not exist");
-        Ballot storage ballot = ballotList[ballotId];
+        Ballot storage ballot = ballotList[ballotId - 1];
         uint256 candidateIndex = findCandidateIndex(ballot, candidate);
         require(candidateIndex != type(uint256).max, "Candidate does not exist");
 
