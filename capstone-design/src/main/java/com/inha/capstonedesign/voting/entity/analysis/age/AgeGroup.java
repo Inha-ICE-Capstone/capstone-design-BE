@@ -1,7 +1,8 @@
 package com.inha.capstonedesign.voting.entity.analysis.age;
 
 public enum AgeGroup {
-    TWENTIES_OR_LESS("20대 이하"),
+    TEENS_OR_LESS("10대 이하"),
+    TWENTIES("20대"),
     THIRTIES("30대"),
     FORTIES("40대"),
     FIFTIES("50대"),
