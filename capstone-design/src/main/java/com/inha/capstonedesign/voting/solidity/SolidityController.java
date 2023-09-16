@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,5 +27,10 @@ public class SolidityController {
     @GetMapping("/candidates/{ballotId}")
     public ResponseEntity<List<String>> getCandidateList(@PathVariable Integer ballotId) {
         return ResponseEntity.ok(solidityService.getCandidateListFromEth(ballotId));
+    }
+
+    @GetMapping("/vote-count/{ballotId}/{candidateName}")
+    public ResponseEntity<BigInteger> getVoteCount(@PathVariable Long ballotId, @PathVariable String candidateName) {
+        return ResponseEntity.ok(solidityService.getVoteCount(ballotId, candidateName));
     }
 }

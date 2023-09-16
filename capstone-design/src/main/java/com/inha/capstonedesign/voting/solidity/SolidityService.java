@@ -54,4 +54,14 @@ public class SolidityService {
         }
         return new ArrayList<>();
     }
+
+    public BigInteger getVoteCount(Long ballotId, String candidateName) {
+        try {
+            BigInteger voteCount = votingContract.getVoteCount(BigInteger.valueOf(ballotId), candidateName).send();
+            return voteCount;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return BigInteger.valueOf(-9999L);
+    }
 }

@@ -124,16 +124,6 @@ public class VotingService {
         }
     }
 
-    public BigInteger getVoteCount(VoteRequestDto voteDto) {
-//        try {
-//            BigInteger voteCount = votingContract.getVoteCount(BigInteger.valueOf(voteDto.getBallotId()), voteDto.getCandidateName()).send();
-//            return voteCount;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        return BigInteger.valueOf(-9999L);
-    }
-
     @Transactional
     public void verifyAndUpdateVotingRecordStatus(VoteRequestDto voteDto, MemberRequestDto.Access access) {
         Member member = memberRepository.findByMemberEmail(access.getEmail())

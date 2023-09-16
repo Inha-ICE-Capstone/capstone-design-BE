@@ -42,12 +42,6 @@ public class VotingController {
         return ResponseEntity.ok(votingService.getBallotDetail(ballotId));
     }
 
-    @GetMapping("/vote-count")
-    public ResponseEntity<BigInteger> getVoteCount(@RequestBody @Valid VoteRequestDto voteDto) {
-        return ResponseEntity.ok(votingService.getVoteCount(voteDto));
-    }
-
-
     @PostMapping
     public ResponseEntity<String> vote(@RequestBody @Valid VoteRequestDto voteDto,
                                        @AuthenticationPrincipal MemberRequestDto.Access access) {
