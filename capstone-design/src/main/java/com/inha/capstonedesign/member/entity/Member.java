@@ -2,6 +2,7 @@ package com.inha.capstonedesign.member.entity;
 
 import com.inha.capstonedesign.image.entity.MemberImage;
 import com.inha.capstonedesign.voting.entity.VotingRecord;
+import com.inha.capstonedesign.voting.entity.analysis.age.AgeGroup;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -95,6 +96,24 @@ public class Member implements UserDetails {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public AgeGroup getAgeGroup() {
+        if (this.memberAge < 20) {
+            return AgeGroup.TEENS_OR_LESS;
+        } else if (this.memberAge < 30) {
+            return AgeGroup.TWENTIES;
+        } else if (this.memberAge < 40) {
+            return AgeGroup.THIRTIES;
+        } else if (this.memberAge < 50) {
+            return AgeGroup.FORTIES;
+        } else if (this.memberAge < 60) {
+            return AgeGroup.FIFTIES;
+        } else if (this.memberAge < 70) {
+            return AgeGroup.SIXTIES;
+        } else {
+            return AgeGroup.SEVENTIES_OR_ABOVE;
+        }
     }
 
     @Override
