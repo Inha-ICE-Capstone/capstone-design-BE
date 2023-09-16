@@ -60,6 +60,7 @@ public class WebSecurityConfig {
                 .antMatchers(AUTH_WHITELIST).permitAll()
                 .antMatchers(HttpMethod.POST, "/members").permitAll()
                 .antMatchers("/admins/**").hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/voting").hasAnyRole("USER")
                 .anyRequest().authenticated()
                 .and()
 
