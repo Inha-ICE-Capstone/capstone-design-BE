@@ -59,4 +59,8 @@ public class Image {
     public BallotImage toBallotImage() {
         return new BallotImage(this);
     }
+
+    public CandidateImage toCandidateImage() {
+        return new CandidateImage(this);
+    }
 }

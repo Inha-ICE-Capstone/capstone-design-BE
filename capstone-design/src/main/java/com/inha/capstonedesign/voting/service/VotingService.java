@@ -11,8 +11,10 @@ import com.inha.capstonedesign.voting.dto.request.VoteRequestDto;
 import com.inha.capstonedesign.voting.dto.response.BallotResponseDto;
 import com.inha.capstonedesign.voting.entity.Ballot;
 import com.inha.capstonedesign.voting.entity.BallotStatus;
+import com.inha.capstonedesign.voting.entity.Candidate;
 import com.inha.capstonedesign.voting.exception.VotingException;
 import com.inha.capstonedesign.voting.exception.VotingExceptionType;
+import com.inha.capstonedesign.voting.repository.CandidateRepository;
 import com.inha.capstonedesign.voting.repository.ballot.BallotRepository;
 import com.inha.capstonedesign.voting.solidity.Voting;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +32,6 @@ import org.web3j.protocol.http.HttpService;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,7 @@ public class VotingService {
     private Voting votingContract;
 
     private final BallotRepository ballotRepository;
+    private final CandidateRepository candidateRepository;
     private final ImageUploadService imageUploadService;
 
     @PostConstruct
@@ -62,7 +64,7 @@ public class VotingService {
     }
 
     public BallotResponseDto.Detail getBallotDetail(Long ballotId) {
-        Ballot ballot = ballotRepository.findByBallotId(ballotId)
+        Ballot ballot = ballotRepository.findByBallotIdWithImage(ballotId)
                 .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
         return BallotResponseDto.Detail.of(ballot);
     }
@@ -84,9 +86,21 @@ public class VotingService {
         }
     }
 
-    public void addCandidate(CandidateRequestDto candidateDto) {
+    @Transactional
+    public void addCandidate(CandidateRequestDto candidateDto, MultipartFile candidateImage) {
         try {
             votingContract.addCandidate(BigInteger.valueOf(candidateDto.getBallotId()), candidateDto.getCandidateName()).send();
+
+            Ballot ballot = ballotRepository.findByBallotId(candidateDto.getBallotId())
+                    .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
+
+
+            Candidate candidate = new Candidate(candidateDto.getCandidateName());
+            Image image = imageUploadService.uploadImage(candidateImage);
+            candidate.setCandidateImage(image.toCandidateImage());
+
+            ballot.addCandidate(candidate);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

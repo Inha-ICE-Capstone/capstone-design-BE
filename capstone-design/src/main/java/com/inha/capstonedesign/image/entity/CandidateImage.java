@@ -12,4 +12,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "candidate_image")
 public class CandidateImage extends Image {
+
+    public CandidateImage(Image image) {
+        super(image);
+    }
 }

@@ -27,8 +27,9 @@ public class AdminVotingController {
     }
 
     @PostMapping("/candidates")
-    public ResponseEntity<String> addCandidate(@RequestBody @Valid CandidateRequestDto candidateDto) {
-        votingService.addCandidate(candidateDto);
+    public ResponseEntity<String> addCandidate(@RequestPart @Valid CandidateRequestDto candidateRequestDto,
+                                               @RequestPart MultipartFile candidateImage) {
+        votingService.addCandidate(candidateRequestDto, candidateImage);
 
         return ResponseEntity.ok(null);
     }
