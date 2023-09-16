@@ -38,8 +38,9 @@ public class VotingController {
     }
 
     @GetMapping("/ballots/{ballotId}")
-    public ResponseEntity<BallotResponseDto.Detail> getBallotDetail(@PathVariable Long ballotId) {
-        return ResponseEntity.ok(votingService.getBallotDetail(ballotId));
+    public ResponseEntity<BallotResponseDto.Detail> getBallotDetail(@PathVariable Long ballotId,
+                                                                    @AuthenticationPrincipal MemberRequestDto.Access access) {
+        return ResponseEntity.ok(votingService.getBallotDetail(ballotId, access));
     }
 
     @PostMapping

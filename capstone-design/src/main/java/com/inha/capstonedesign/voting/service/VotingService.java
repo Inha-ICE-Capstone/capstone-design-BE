@@ -9,6 +9,7 @@ import com.inha.capstonedesign.image.ImageUploadService;
 import com.inha.capstonedesign.image.entity.Image;
 import com.inha.capstonedesign.member.dto.request.MemberRequestDto;
 import com.inha.capstonedesign.member.entity.Member;
+import com.inha.capstonedesign.member.entity.Role;
 import com.inha.capstonedesign.member.repository.MemberRepository;
 import com.inha.capstonedesign.voting.dto.request.BallotRequestDto;
 import com.inha.capstonedesign.voting.dto.request.CandidateRequestDto;
@@ -81,10 +82,15 @@ public class VotingService {
         return new PageResponseDto<>(new PageImpl<>(ballotResponseDtos, pageable, ballots.getTotalElements()));
     }
 
-    public BallotResponseDto.Detail getBallotDetail(Long ballotId) {
+    public BallotResponseDto.Detail getBallotDetail(Long ballotId, MemberRequestDto.Access access) {
+        Member member = memberRepository.findByMemberEmail(access.getEmail())
+                .orElseThrow(() -> new AuthException(AuthExceptionType.ACCOUNT_NOT_EXISTS));
+
         Ballot ballot = ballotRepository.findByBallotIdWithImage(ballotId)
                 .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
-        return BallotResponseDto.Detail.of(ballot);
+
+        Boolean canVote = verifySubject(member, ballot);
+        return BallotResponseDto.Detail.of(ballot, canVote);
     }
 
     @Transactional
@@ -194,6 +200,10 @@ public class VotingService {
     }
 
     private boolean verifySubject(Member member, Ballot ballot) {
+
+        if(!member.getRoles().contains(Role.ROLE_USER)){
+            return false;
+        }
         if (ballot.getBallotMinAge() != null) {
             if (member.getMemberAge() < ballot.getBallotMinAge()) {
                 return false;
