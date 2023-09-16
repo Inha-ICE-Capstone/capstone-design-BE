@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 public class CandidateRequestDto {
 
     @NotNull
-    private Integer ballotId;
+    private Long ballotId;
     @NotNull
     private String candidateName;
 }
