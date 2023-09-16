@@ -5,8 +5,10 @@ import com.inha.capstonedesign.image.entity.CandidateImage;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Entity
@@ -20,10 +22,12 @@ public class Candidate {
     private Long candidateId;
 
     @Column(name = "candidate_name")
+    @NotNull
     private String candidateName;
 
     @Column(name = "candidate_vote_count")
-    private Integer candidateVoteCount;
+    @NotNull
+    private Integer candidateVoteCount = 0;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,5 +36,10 @@ public class Candidate {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "candidate_image_id")
+    @Setter
     private CandidateImage candidateImage;
+
+    public Candidate(String candidateName) {
+        this.candidateName = candidateName;
+    }
 }
