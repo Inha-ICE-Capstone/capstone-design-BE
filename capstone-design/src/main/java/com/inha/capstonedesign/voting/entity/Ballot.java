@@ -6,7 +6,6 @@ import com.inha.capstonedesign.member.entity.Region;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public class Ballot {
     @NotNull
     private BallotStatus ballotStatus;
 
-    @OneToMany(mappedBy = "ballot")
+    @OneToMany(mappedBy = "ballot", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Candidate> candidates = new ArrayList<>();
 
     @OneToMany(mappedBy = "ballot")
@@ -73,6 +72,11 @@ public class Ballot {
 
     public void changeBallotStatus(BallotStatus ballotStatus) {
         this.ballotStatus = ballotStatus;
+    }
+
+    public void addCandidate(Candidate candidate) {
+        this.candidates.add(candidate);
+        candidate.setBallot(this);
     }
 
     @Builder

@@ -32,6 +32,7 @@ public class Candidate {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ballot_id")
+    @Setter
     private Ballot ballot;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
