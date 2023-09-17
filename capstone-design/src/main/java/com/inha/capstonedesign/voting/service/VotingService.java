@@ -89,8 +89,8 @@ public class VotingService {
         Ballot ballot = ballotRepository.findByBallotIdWithImage(ballotId)
                 .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
 
-        Boolean canVote = verifySubject(member, ballot);
-        return BallotResponseDto.Detail.of(ballot, canVote);
+        Boolean isSubject = verifySubject(member, ballot);
+        return BallotResponseDto.Detail.of(ballot, isSubject);
     }
 
     @Transactional
