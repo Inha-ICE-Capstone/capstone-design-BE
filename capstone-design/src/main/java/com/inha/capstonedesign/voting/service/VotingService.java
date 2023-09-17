@@ -89,8 +89,11 @@ public class VotingService {
         Ballot ballot = ballotRepository.findByBallotIdWithImage(ballotId)
                 .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
 
-        Boolean isSubject = verifySubject(member, ballot);
-        return BallotResponseDto.Detail.of(ballot, isSubject);
+        Optional<VotingRecord> votingRecord = votingRecordRepository.findByVoterAndBallot(member, ballot);
+
+        boolean isSubject = verifySubject(member, ballot);
+        boolean notVoted = checkNotVoted(votingRecord);
+        return BallotResponseDto.Detail.of(ballot, isSubject, notVoted);
     }
 
     @Transactional
@@ -201,7 +204,7 @@ public class VotingService {
 
     private boolean verifySubject(Member member, Ballot ballot) {
 
-        if(!member.getRoles().contains(Role.ROLE_USER)){
+        if (!member.getRoles().contains(Role.ROLE_USER)) {
             return false;
         }
         if (ballot.getBallotMinAge() != null) {
@@ -223,6 +226,16 @@ public class VotingService {
             if (!member.getMemberGender().equals(ballot.getBallotSubjectGender())) {
                 return false;
             }
+        }
+        return true;
+    }
+
+    private boolean checkNotVoted(Optional<VotingRecord> votingRecord) {
+        if (votingRecord.isPresent()) {
+            if (votingRecord.get().getVotingRecordStatus().equals(VotingRecordStatus.CANCELLED_ERROR)) {
+                return true;
+            }
+            return false;
         }
         return true;
     }
