@@ -25,6 +25,8 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (TokenException e) {
             log.error("--------------------------------");
+            log.error("URL = {}",request.getRequestURL());
+            log.error("--------------------------------");
             log.error("StackTrace = {} ", (Object) e.getStackTrace());
             log.error("HttpStatus = {} ", e.getCustomExceptionType().getHttpStatus());
             log.error("Code = {} ", e.getCustomExceptionType().getCode());
