@@ -78,9 +78,10 @@ public class BallotResponseDto {
         private String ballotImage;
         private String ballotStatus;
         private Boolean isSubject;
+        private Boolean notVoted;
 
         @Builder
-        public Detail(String ballotName, LocalDateTime ballotStartDateTime, LocalDateTime ballotEndDateTime, Integer ballotMinAge, Integer ballotMaxAge, String ballotSubjectRegion, String ballotSubjectGender, String ballotBriefDescription, String ballotDetailDescription, List<Candidate> candidates, String ballotImage, String ballotStatus, Boolean isSubject) {
+        public Detail(String ballotName, LocalDateTime ballotStartDateTime, LocalDateTime ballotEndDateTime, Integer ballotMinAge, Integer ballotMaxAge, String ballotSubjectRegion, String ballotSubjectGender, String ballotBriefDescription, String ballotDetailDescription, List<Candidate> candidates, String ballotImage, String ballotStatus, Boolean isSubject, Boolean notVoted) {
             this.ballotName = ballotName;
             this.ballotStartDateTime = ballotStartDateTime;
             this.ballotEndDateTime = ballotEndDateTime;
@@ -95,9 +96,10 @@ public class BallotResponseDto {
             this.ballotImage = ballotImage;
             this.ballotStatus = ballotStatus;
             this.isSubject = isSubject;
+            this.notVoted = notVoted;
         }
 
-        public static Detail of(Ballot ballot, Boolean isSubject) {
+        public static Detail of(Ballot ballot, Boolean isSubject, Boolean notVoted) {
 
             Detail.DetailBuilder detailBuilder = Detail.builder()
                     .ballotName(ballot.getBallotName())
@@ -109,7 +111,8 @@ public class BallotResponseDto {
                     .ballotDetailDescription(ballot.getBallotDetailDescription())
                     .candidates(ballot.getCandidates())
                     .ballotStatus(ballot.getBallotStatus().getKorean())
-                    .isSubject(isSubject);
+                    .isSubject(isSubject)
+                    .notVoted(notVoted);
 
             if (ballot.getBallotSubjectRegion() != null) {
                 detailBuilder.ballotSubjectRegion(ballot.getBallotSubjectRegion().getKorean());
