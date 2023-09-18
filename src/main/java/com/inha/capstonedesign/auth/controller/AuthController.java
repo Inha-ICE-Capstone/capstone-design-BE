@@ -50,13 +50,19 @@ public class AuthController {
         return ResponseEntity.ok(tokenDto);
     }
 
+//    @PostMapping("/reissue")
+//    public ResponseEntity<String> reissueByCookie(
+//            @CookieValue(value = "refreshToken", required = false) Cookie refreshCookie) {
+//        if (refreshCookie == null) {
+//            throw new TokenException(TokenExceptionType.REFRESH_TOKEN_NOT_EXIST);
+//        }
+//        String refreshToken = refreshCookie.getValue();
+//        String reissuedAccessToken = authService.reissue(refreshToken);
+//        return ResponseEntity.ok(reissuedAccessToken);
+//    }
+
     @PostMapping("/reissue")
-    public ResponseEntity<String> reissue(
-            @CookieValue(value = "refreshToken", required = false) Cookie refreshCookie) {
-        if (refreshCookie == null) {
-            throw new TokenException(TokenExceptionType.REFRESH_TOKEN_NOT_EXIST);
-        }
-        String refreshToken = refreshCookie.getValue();
+    public ResponseEntity<String> reissue(@RequestBody String refreshToken) {
         String reissuedAccessToken = authService.reissue(refreshToken);
         return ResponseEntity.ok(reissuedAccessToken);
     }
