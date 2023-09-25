@@ -45,7 +45,6 @@ jobs:
 
     - name: make application.properties  #4
       run: |
-        rm ./capstone-design/src/main/resources/application.properties
         echo "${{ secrets.APPLICATION }}" > ./capstone-design/src/main/resources/application.properties
         touch ./capstone-design/src/main/resources/application.properties
         echo "${{ secrets.APPLICATION }}" > ./capstone-design/src/main/resources/application.properties
