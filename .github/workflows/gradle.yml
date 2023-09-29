@@ -31,7 +31,7 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
-
+        
       # Cache Gradle #3
     - name: Gradle Caching
       uses: actions/cache@v3
@@ -45,28 +45,46 @@ jobs:
 
     - name: make application.properties  #4
       run: |
-        echo "${{ secrets.APPLICATION }}" > ./capstone-design/src/main/resources/application.properties
-        touch ./capstone-design/src/main/resources/application.properties
-        echo "${{ secrets.APPLICATION }}" > ./capstone-design/src/main/resources/application.properties
-        cat ./capstone-design/src/main/resources/application.properties
+        touch ./src/main/resources/application.properties
+        echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
 
-    - name: Build with Gradle #5
+    - name: Run chmod to make gradlew executable #5
+      run: chmod +x ./gradlew
+        
+    - name: Build with Gradle #6
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         arguments: build
-      env:
-        GRADLE_USER_HOME: capstone-design/gradle
-      
 
-    - name: Docker image build #6
+    - name: Docker image build #7
       run: docker build -t jjwm/inha:latest .
 
-    - name: Docker Hub login #7
+    - name: Docker Hub login #8
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
 
-    - name: Docker Hub publish #7
+    - name: Docker Hub publish #9
       run: docker push jjwm/inha:latest
-    
+  
+    - name: EC2 Docker Stop and Delete Container and Image #10
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          sudo docker stop inha-container
+          sudo docker rm inha-container
+          sudo docker rmi jjwm/inha:latest
+
+    - name: EC2 Docker Pull and Run #11
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          sudo docker pull jjwm/inha:latest
+          sudo docker run -p 8080:8080 -d --name inha-container --log-driver=awslogs --log-opt awslogs-region=ap-northeast-2 --log-opt awslogs-group=jookimryu jjwm/inha:latest
