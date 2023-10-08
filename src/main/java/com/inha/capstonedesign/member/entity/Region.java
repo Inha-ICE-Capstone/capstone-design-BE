@@ -3,6 +3,7 @@ package com.inha.capstonedesign.member.entity;
 public enum Region {
 
     SEOUL("서울"),
+    INCHEON("인천"),
     GYEONGGI("경기도"),
     GANGWON("강원도"),
     CHUNGCHEONGBUK("충청북도"),
