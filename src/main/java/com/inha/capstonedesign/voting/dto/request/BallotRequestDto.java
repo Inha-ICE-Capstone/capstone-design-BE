@@ -36,6 +36,8 @@ public class BallotRequestDto {
     private Region setEnumSubjectRegion(String region) {
         if (region.equals(Region.GYEONGGI.getKorean())) {
             return Region.GYEONGGI;
+        } else if (region.equals(Region.INCHEON.getKorean())) {
+            return Region.INCHEON;
         } else if (region.equals(Region.GANGWON.getKorean())) {
             return Region.GANGWON;
         } else if (region.equals(Region.CHUNGCHEONGBUK.getKorean())) {
