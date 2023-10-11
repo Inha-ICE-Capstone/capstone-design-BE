@@ -15,6 +15,7 @@ public class BallotResponseDto {
 
     @Getter
     public static class Page {
+        private Long ballotId;
         private String ballotName;
         private LocalDateTime ballotStartDateTime;
         private LocalDateTime ballotEndDateTime;
@@ -27,7 +28,8 @@ public class BallotResponseDto {
         private String ballotStatus;
 
         @Builder
-        public Page(String ballotName, LocalDateTime ballotStartDateTime, LocalDateTime ballotEndDateTime, Integer ballotMinAge, Integer ballotMaxAge, String ballotSubjectRegion, String ballotSubjectGender, String ballotBriefDescription, String ballotImage, String ballotStatus) {
+        public Page(Long ballotId, String ballotName, LocalDateTime ballotStartDateTime, LocalDateTime ballotEndDateTime, Integer ballotMinAge, Integer ballotMaxAge, String ballotSubjectRegion, String ballotSubjectGender, String ballotBriefDescription, String ballotImage, String ballotStatus) {
+            this.ballotId = ballotId;
             this.ballotName = ballotName;
             this.ballotStartDateTime = ballotStartDateTime;
             this.ballotEndDateTime = ballotEndDateTime;
@@ -42,6 +44,7 @@ public class BallotResponseDto {
 
         public static Page of(Ballot ballot) {
             PageBuilder ballotResponseDtoBuilder = Page.builder()
+                    .ballotId(ballot.getBallotId())
                     .ballotName(ballot.getBallotName())
                     .ballotStartDateTime(ballot.getBallotStartDateTime())
                     .ballotEndDateTime(ballot.getBallotEndDateTime())
