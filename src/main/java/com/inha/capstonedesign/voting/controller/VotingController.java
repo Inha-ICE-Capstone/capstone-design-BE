@@ -12,7 +12,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.math.BigInteger;
 
 import static com.inha.capstonedesign.global.config.PageSizeConfig.BALLOT_PAGE_SIZE;
 
@@ -32,7 +31,7 @@ public class VotingController {
         }
 
         PageRequest pageRequest = PageRequest.of(page - 1, BALLOT_PAGE_SIZE);
-        PageResponseDto<BallotResponseDto.Page> ballotResponse = votingService.getBallotResponse(pageRequest, status);
+        PageResponseDto<BallotResponseDto.Page> ballotResponse = votingService.getBallotPage(pageRequest, status);
 
         return ResponseEntity.ok(ballotResponse);
     }
