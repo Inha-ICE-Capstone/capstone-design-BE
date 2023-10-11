@@ -76,7 +76,7 @@ public class VotingService {
         votingContract = Voting.load(web3jProperties.getContractAddress(), web3j, credentials, gasProvider);
     }
 
-    public PageResponseDto<BallotResponseDto.Page> getBallotResponse(Pageable pageable, String status) {
+    public PageResponseDto<BallotResponseDto.Page> getBallotPage(Pageable pageable, String status) {
         Page<Ballot> ballots = ballotRepository.findAllByBallotStatusOrderByBallotEndDateTime(pageable, status);
         List<BallotResponseDto.Page> ballotResponseDtos = ballots.getContent().stream().map(BallotResponseDto.Page::of).collect(Collectors.toList());
         return new PageResponseDto<>(new PageImpl<>(ballotResponseDtos, pageable, ballots.getTotalElements()));
