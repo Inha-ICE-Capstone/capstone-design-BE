@@ -6,6 +6,7 @@ import com.inha.capstonedesign.global.response.PageResponseDto;
 import com.inha.capstonedesign.global.web3j.GasProvider;
 import com.inha.capstonedesign.global.web3j.Web3jProperties;
 import com.inha.capstonedesign.image.ImageUploadService;
+import com.inha.capstonedesign.image.entity.Image;
 import com.inha.capstonedesign.member.dto.request.MemberRequestDto;
 import com.inha.capstonedesign.member.entity.Member;
 import com.inha.capstonedesign.member.entity.Role;
@@ -13,7 +14,6 @@ import com.inha.capstonedesign.member.repository.MemberRepository;
 import com.inha.capstonedesign.voting.dto.request.BallotRequestDto;
 import com.inha.capstonedesign.voting.dto.request.CandidateRequestDto;
 import com.inha.capstonedesign.voting.dto.request.VoteRequestDto;
-import com.inha.capstonedesign.voting.dto.request.VoteTestDto;
 import com.inha.capstonedesign.voting.dto.response.BallotResponseDto;
 import com.inha.capstonedesign.voting.entity.*;
 import com.inha.capstonedesign.voting.entity.analysis.age.AgeGroupVotingAnalysis;
@@ -99,15 +99,15 @@ public class VotingService {
     @Transactional
     public void addBallot(BallotRequestDto ballotRequestDto, MultipartFile ballotImage) throws IOException {
         try {
-//            if (ballotRequestDto.getBallotEndDateTime().isBefore(ballotRequestDto.getBallotStartDateTime())) {
-//                throw new VotingException(VotingExceptionType.BALLOT_END_TIME_BEFORE_START_TIME);
-//            }
+            if (ballotRequestDto.getBallotEndDateTime().isBefore(ballotRequestDto.getBallotStartDateTime())) {
+                throw new VotingException(VotingExceptionType.BALLOT_END_TIME_BEFORE_START_TIME);
+            }
             votingContract.addBallot(ballotRequestDto.getBallotName()).send();
-//            Ballot ballot = ballotRequestDto.toEntity();
-//
-//            Image image = imageUploadService.uploadImage(ballotImage);
-//            ballot.setBallotImage(image.toBallotImage());
-//            ballotRepository.save(ballot);
+            Ballot ballot = ballotRequestDto.toEntity();
+
+            Image image = imageUploadService.uploadImage(ballotImage);
+            ballot.setBallotImage(image.toBallotImage());
+            ballotRepository.save(ballot);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -118,15 +118,15 @@ public class VotingService {
         try {
             votingContract.addCandidate(BigInteger.valueOf(candidateDto.getBallotId()), candidateDto.getCandidateName()).send();
 
-//            Ballot ballot = ballotRepository.findByBallotId(candidateDto.getBallotId())
-//                    .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
-//
-//
-//            Candidate candidate = new Candidate(candidateDto.getCandidateName());
-//            Image image = imageUploadService.uploadImage(candidateImage);
-//            candidate.setCandidateImage(image.toCandidateImage());
-//
-//            ballot.addCandidate(candidate);
+            Ballot ballot = ballotRepository.findByBallotId(candidateDto.getBallotId())
+                    .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
+
+
+            Candidate candidate = new Candidate(candidateDto.getCandidateName());
+            Image image = imageUploadService.uploadImage(candidateImage);
+            candidate.setCandidateImage(image.toCandidateImage());
+
+            ballot.addCandidate(candidate);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -159,7 +159,7 @@ public class VotingService {
         votingRecordRepository.save(new VotingRecord(member, ballot));
     }
 
-/*    @Transactional
+    @Transactional
     public void vote(VoteRequestDto voteDto, MemberRequestDto.Access access) {
         Member member = memberRepository.findByMemberEmail(access.getEmail())
                 .orElseThrow(() -> new AuthException(AuthExceptionType.ACCOUNT_NOT_EXISTS));
@@ -184,16 +184,6 @@ public class VotingService {
 
         } catch (Exception e) {
             votingRecord.changeVotingRecordStatus(VotingRecordStatus.CANCELLED_ERROR);
-            e.printStackTrace();
-        }
-    }*/
-
-    @Transactional
-    public void vote(VoteTestDto voteDto, MemberRequestDto.Access access) {
-
-        try {
-            votingContract.voteForCandidate(BigInteger.valueOf(voteDto.getBallotId()), voteDto.getCandidateName()).send();
-        } catch (Exception e) {
             e.printStackTrace();
         }
     }

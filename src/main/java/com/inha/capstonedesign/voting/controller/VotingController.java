@@ -3,7 +3,6 @@ package com.inha.capstonedesign.voting.controller;
 import com.inha.capstonedesign.global.response.PageResponseDto;
 import com.inha.capstonedesign.member.dto.request.MemberRequestDto;
 import com.inha.capstonedesign.voting.dto.request.VoteRequestDto;
-import com.inha.capstonedesign.voting.dto.request.VoteTestDto;
 import com.inha.capstonedesign.voting.dto.response.BallotResponseDto;
 import com.inha.capstonedesign.voting.service.VotingService;
 import lombok.RequiredArgsConstructor;
@@ -43,18 +42,10 @@ public class VotingController {
         return ResponseEntity.ok(votingService.getBallotDetail(ballotId, access));
     }
 
-/*    @PostMapping
+    @PostMapping
     public ResponseEntity<String> vote(@RequestBody @Valid VoteRequestDto voteDto,
                                        @AuthenticationPrincipal MemberRequestDto.Access access) {
         votingService.verifyAndUpdateVotingRecordStatus(voteDto, access);
-        votingService.vote(voteDto, access);
-
-        return ResponseEntity.ok(null);
-    }*/
-
-    @PostMapping
-    public ResponseEntity<String> vote(@RequestBody @Valid VoteTestDto voteDto,
-                                       @AuthenticationPrincipal MemberRequestDto.Access access) {
         votingService.vote(voteDto, access);
 
         return ResponseEntity.ok(null);
