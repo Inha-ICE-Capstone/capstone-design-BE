@@ -141,6 +141,8 @@ public class VotingService {
         Ballot ballot = ballotRepository.findByBallotId(voteDto.getBallotId())
                 .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
 
+        verifyBallotStatus(ballot);
+
         if (!verifySubject(member, ballot)) {
             throw new VotingException(VotingExceptionType.NOT_SUBJECT);
         }
@@ -200,6 +202,14 @@ public class VotingService {
                 .forEach(ballot -> ballot.changeBallotStatus(BallotStatus.IN_PROGRESS));
         inProgressBallots.stream()
                 .forEach(ballot -> ballot.changeBallotStatus(BallotStatus.CLOSED));
+    }
+
+    private void verifyBallotStatus(Ballot ballot) {
+        if(ballot.getBallotStatus()==BallotStatus.NOT_STARTED){
+            throw new VotingException(VotingExceptionType.BALLOT_NOT_STARTED);
+        }else if(ballot.getBallotStatus()==BallotStatus.CLOSED){
+            throw new VotingException(VotingExceptionType.BALLOT_CLOSED);
+        }
     }
 
     private boolean verifySubject(Member member, Ballot ballot) {
