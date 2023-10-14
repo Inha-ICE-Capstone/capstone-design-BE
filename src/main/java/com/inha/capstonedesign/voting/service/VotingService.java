@@ -97,7 +97,7 @@ public class VotingService {
     }
 
     @Transactional
-    public void addBallot(BallotRequestDto ballotRequestDto) throws IOException {
+    public void addBallot(BallotRequestDto ballotRequestDto, MultipartFile ballotImage) throws IOException {
         try {
             if (ballotRequestDto.getBallotEndDateTime().isBefore(ballotRequestDto.getBallotStartDateTime())) {
                 throw new VotingException(VotingExceptionType.BALLOT_END_TIME_BEFORE_START_TIME);
@@ -105,6 +105,8 @@ public class VotingService {
             votingContract.addBallot(ballotRequestDto.getBallotName()).send();
             Ballot ballot = ballotRequestDto.toEntity();
 
+            Image image = imageUploadService.uploadImage(ballotImage);
+            ballot.setBallotImage(image.toBallotImage());
             ballotRepository.save(ballot);
         } catch (Exception e) {
             e.printStackTrace();
