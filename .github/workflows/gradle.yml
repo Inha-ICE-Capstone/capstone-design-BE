@@ -9,9 +9,9 @@ name: Spring Boot & Gradle & Docker & EC2 CD
 
 on:
   push:
-    branches: [ "deploy" ]
+    branches: [ "deploy22" ]
   pull_request:
-    branches: [ "deploy" ]
+    branches: [ "deploy22" ]
 
 permissions:
   contents: read
