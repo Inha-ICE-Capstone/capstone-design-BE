@@ -102,7 +102,7 @@ public class VotingService {
             if (ballotRequestDto.getBallotEndDateTime().isBefore(ballotRequestDto.getBallotStartDateTime())) {
                 throw new VotingException(VotingExceptionType.BALLOT_END_TIME_BEFORE_START_TIME);
             }
-            //votingContract.addBallot(ballotRequestDto.getBallotName()).send();
+            votingContract.addBallot(ballotRequestDto.getBallotName()).send();
             Ballot ballot = ballotRequestDto.toEntity();
 
             Image image = imageUploadService.uploadImage(ballotImage);
