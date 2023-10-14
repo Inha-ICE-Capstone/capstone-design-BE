@@ -19,7 +19,7 @@ public class AdminVotingController {
 
     private final VotingService votingService;
 
-    @PostMapping(value = "/ballots", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/ballots", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<String> addBallot(@RequestPart @Valid BallotRequestDto ballotRequestDto,
                                             @RequestPart MultipartFile ballotImage) throws IOException {
         votingService.addBallot(ballotRequestDto, ballotImage);
