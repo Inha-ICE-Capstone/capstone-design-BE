@@ -96,7 +96,7 @@ public class VotingService {
         return BallotResponseDto.Detail.of(ballot, isSubject, notVoted);
     }
 
-    @Transactional
+    //@Transactional
     public void addBallot(BallotRequestDto ballotRequestDto, MultipartFile ballotImage) throws IOException {
         try {
             if (ballotRequestDto.getBallotEndDateTime().isBefore(ballotRequestDto.getBallotStartDateTime())) {
