@@ -5,16 +5,23 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
-name: Spring Boot & Gradle & Docker & EC2 CD
+name: Spring Boot & Gradle & EC2 & S3 & CodeDeploy CD
 
 on:
   push:
-    branches: [ "deploy22" ]
+    branches: [ "deploy" ]
   pull_request:
-    branches: [ "deploy22" ]
+    branches: [ "deploy" ]
 
 permissions:
   contents: read
+
+env:
+  PROJECT_NAME: inha-capstone-design
+  BUCKET_NAME: inha-cicd-bucket
+  CODE_DEPLOY_APP_NAME: inha-cicd-application
+  DEPLOYMENT_GROUP_NAME: inha-cicd-group
+
 
 jobs:
   build:
@@ -22,10 +29,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    
-    - name: checkout #1 
+
+    - name: checkout #1
       uses: actions/checkout@v3
-      
+
     - name: Set up JDK 11 #2
       uses: actions/setup-java@v3
       with:
@@ -50,41 +57,63 @@ jobs:
 
     - name: Run chmod to make gradlew executable #5
       run: chmod +x ./gradlew
-        
+
     - name: Build with Gradle #6
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
         arguments: build
 
-    - name: Docker image build #7
-      run: docker build -t jjwm/inha:latest .
+    - name: Make Zip File
+      run: zip -qq -r ./$GITHUB_SHA.zip .
+      shell: bash
 
-    - name: Docker Hub login #8
-      uses: docker/login-action@v2
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_TOKEN }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_PRIVATE_ACCESS_KEY }}
+        aws-region: ap-northeast-2
 
-    - name: Docker Hub publish #9
-      run: docker push jjwm/inha:latest
-  
-    - name: EC2 Docker Stop and Delete Container and Image #10
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USERNAME }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          sudo docker stop inha-container
-          sudo docker rm inha-container
-          sudo docker rmi jjwm/inha:latest
+    - name: Code Deploy To EC2 instance
+      run: aws deploy create-deployment
+        --application-name $CODE_DEPLOY_APP_NAME
+        --deployment-config-name CodeDeployDefault.AllAtOnce
+        --deployment-group-name $DEPLOYMENT_GROUP_NAME
+        --s3-location bucket=$BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
 
-    - name: EC2 Docker Pull and Run #11
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USERNAME }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          sudo docker pull jjwm/inha:latest
-          sudo docker run -p 8080:8080 -d --name inha-container --log-driver=awslogs --log-opt awslogs-region=ap-northeast-2 --log-opt awslogs-group=jookimryu jjwm/inha:latest
+
+
+
+
+#    - name: Docker image build #7
+#      run: docker build -t jjwm/inha:latest .
+#
+#    - name: Docker Hub login #8
+#      uses: docker/login-action@v2
+#      with:
+#        username: ${{ secrets.DOCKER_USERNAME }}
+#        password: ${{ secrets.DOCKER_TOKEN }}
+#
+#    - name: Docker Hub publish #9
+#      run: docker push jjwm/inha:latest
+#
+#    - name: EC2 Docker Stop and Delete Container and Image #10
+#      uses: appleboy/ssh-action@master
+#      with:
+#        host: ${{ secrets.EC2_HOST }}
+#        username: ${{ secrets.EC2_USERNAME }}
+#        key: ${{ secrets.EC2_SSH_KEY }}
+#        script: |
+#          sudo docker stop inha-container
+#          sudo docker rm inha-container
+#          sudo docker rmi jjwm/inha:latest
+#
+#    - name: EC2 Docker Pull and Run #11
+#      uses: appleboy/ssh-action@master
+#      with:
+#        host: ${{ secrets.EC2_HOST }}
+#        username: ${{ secrets.EC2_USERNAME }}
+#        key: ${{ secrets.EC2_SSH_KEY }}
+#        script: |
+#          sudo docker pull jjwm/inha:latest
+#          sudo docker run -p 8080:8080 -d --name inha-container --log-driver=awslogs --log-opt awslogs-region=ap-northeast-2 --log-opt awslogs-group=jookimryu jjwm/inha:latest
