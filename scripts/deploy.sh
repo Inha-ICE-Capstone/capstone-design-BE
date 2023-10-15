@@ -3,7 +3,7 @@
 REPOSITORY=/home/ubuntu/inha
 cd $REPOSITORY
 
-APP_NAME=inha-capstone-design
+APP_NAME=capstone-design
 JAR_NAME=$(ls $REPOSITORY/build/libs/ | grep 'SNAPSHOT.jar' | tail -n 1)
 JAR_PATH=$REPOSITORY/build/libs/$JAR_NAME
 
