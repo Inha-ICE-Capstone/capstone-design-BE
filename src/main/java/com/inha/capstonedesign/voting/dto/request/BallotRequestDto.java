@@ -52,17 +52,19 @@ public class BallotRequestDto {
             return Region.GYEONGSANGBUK;
         } else if (region.equals(Region.GYEONGSANGNAM.getKorean())) {
             return Region.GYEONGSANGNAM;
-        } else {
+        } else if (region.equals(Region.SEOUL.getKorean())) {
             return Region.SEOUL;
         }
+        return null;
     }
 
     private Gender setEnumSubjectGender(String gender) {
         if (gender.equals(Gender.MALE.getKorean())) {
             return Gender.MALE;
-        } else {
+        } else if (gender.equals(Gender.FEMALE.getKorean())) {
             return Gender.FEMALE;
         }
+        return null;
     }
 
     public Ballot toEntity() {
