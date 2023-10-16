@@ -36,7 +36,7 @@ public class MemberService {
     }
 
     public PageResponseDto<BallotResponseDto.RecordPage> getMyVoteRecords(Pageable pageable, String email) {
-        final Member member = memberRepository.findByMemberWithImage(email)
+        final Member member = memberRepository.findByMemberEmail(email)
                 .orElseThrow(() -> new AuthException(AuthExceptionType.ACCOUNT_NOT_EXISTS));
         Page<VotingRecord> votingRecords = votingRecordRepository.findByVoter(member, pageable);
 
