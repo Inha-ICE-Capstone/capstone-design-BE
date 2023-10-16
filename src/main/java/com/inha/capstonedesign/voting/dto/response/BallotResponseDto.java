@@ -129,4 +129,33 @@ public class BallotResponseDto {
             return detailBuilder.build();
         }
     }
+
+    @Getter
+    public static class RecordPage {
+        private Long ballotId;
+        private String ballotName;
+        private String ballotBriefDescription;
+        private String ballotImage;
+
+        @Builder
+        public RecordPage(Long ballotId, String ballotName, String ballotBriefDescription, String ballotImage) {
+            this.ballotId = ballotId;
+            this.ballotName = ballotName;
+            this.ballotBriefDescription = ballotBriefDescription;
+            this.ballotImage = ballotImage;
+        }
+
+        public static RecordPage of(Ballot ballot) {
+            RecordPageBuilder ballotResponseDtoBuilder = RecordPage.builder()
+                    .ballotId(ballot.getBallotId())
+                    .ballotName(ballot.getBallotName())
+                    .ballotBriefDescription(ballot.getBallotBriefDescription());
+
+            if (ballot.getBallotImage() != null) {
+                ballotResponseDtoBuilder.ballotImage(ballot.getBallotImage().getImagePath());
+            }
+
+            return ballotResponseDtoBuilder.build();
+        }
+    }
 }
