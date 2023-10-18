@@ -28,7 +28,7 @@ public class JwtTokenUtil {
 
     private static final String AUTHORITIES_KEY = "authorities";
     private static final String NAME_KEY = "email";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L;            // 30분
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;     // 개발 편의상 프론트 재발급 구현 전에는 길게
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;    // 7일
     private final JwtProperties jwtProperties;
     private final Key key;
