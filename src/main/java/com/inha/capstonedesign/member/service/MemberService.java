@@ -38,7 +38,7 @@ public class MemberService {
     public PageResponseDto<BallotResponseDto.RecordPage> getMyVoteRecords(Pageable pageable, String email) {
         final Member member = memberRepository.findByMemberEmail(email)
                 .orElseThrow(() -> new AuthException(AuthExceptionType.ACCOUNT_NOT_EXISTS));
-        Page<VotingRecord> votingRecords = votingRecordRepository.findByVoter(member, pageable);
+        Page<VotingRecord> votingRecords = votingRecordRepository.findByVoterOrderByVotingRecordIdDesc(member, pageable);
 
         List<BallotResponseDto.RecordPage> ballotRecords = votingRecords.getContent().stream()
                 .map(VotingRecord::getBallot)
