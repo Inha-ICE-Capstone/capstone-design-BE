@@ -15,5 +15,5 @@ public interface VotingRecordRepository extends JpaRepository<VotingRecord, Long
     Optional<VotingRecord> findByVoterAndBallot(Member member, Ballot ballot);
 
     @EntityGraph(attributePaths = {"ballot", "ballot.ballotImage"})
-    Page<VotingRecord> findByVoter(Member member, Pageable pageable);
+    Page<VotingRecord> findByVoterOrderByVotingRecordIdDesc(Member member, Pageable pageable);
 }
