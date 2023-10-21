@@ -18,7 +18,7 @@ public class VotingRecord extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "voting_record_id")
-    private Long voting_record_id;
+    private Long votingRecordId;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
