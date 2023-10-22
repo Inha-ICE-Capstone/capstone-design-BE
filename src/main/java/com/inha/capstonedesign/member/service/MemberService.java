@@ -7,7 +7,9 @@ import com.inha.capstonedesign.member.dto.response.MemberResponseDto;
 import com.inha.capstonedesign.member.entity.Member;
 import com.inha.capstonedesign.member.repository.MemberRepository;
 import com.inha.capstonedesign.voting.dto.response.BallotResponseDto;
+import com.inha.capstonedesign.voting.entity.Ballot;
 import com.inha.capstonedesign.voting.entity.VotingRecord;
+import com.inha.capstonedesign.voting.entity.VotingRecordStatus;
 import com.inha.capstonedesign.voting.repository.VotingRecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -41,9 +43,13 @@ public class MemberService {
         Page<VotingRecord> votingRecords = votingRecordRepository.findByVoterOrderByVotingRecordIdDesc(member, pageable);
 
         List<BallotResponseDto.RecordPage> ballotRecords = votingRecords.getContent().stream()
-                .map(VotingRecord::getBallot)
-                .map(BallotResponseDto.RecordPage::of)
+                .map(votingRecord -> {
+                    Ballot ballot = votingRecord.getBallot();
+                    VotingRecordStatus status = votingRecord.getVotingRecordStatus();
+                    return BallotResponseDto.RecordPage.of(ballot, status);
+                })
                 .collect(Collectors.toList());
+
 
         return new PageResponseDto<>(new PageImpl<>(ballotRecords, pageable, votingRecords.getTotalElements()));
     }
