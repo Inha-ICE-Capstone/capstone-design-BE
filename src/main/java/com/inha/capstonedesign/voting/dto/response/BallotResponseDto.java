@@ -2,6 +2,7 @@ package com.inha.capstonedesign.voting.dto.response;
 
 import com.inha.capstonedesign.voting.entity.Ballot;
 import com.inha.capstonedesign.voting.entity.Candidate;
+import com.inha.capstonedesign.voting.entity.VotingRecordStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -136,20 +137,23 @@ public class BallotResponseDto {
         private String ballotName;
         private String ballotBriefDescription;
         private String ballotImage;
+        private String votingRecordStatus;
 
         @Builder
-        public RecordPage(Long ballotId, String ballotName, String ballotBriefDescription, String ballotImage) {
+        public RecordPage(Long ballotId, String ballotName, String ballotBriefDescription, String ballotImage, String votingRecordStatus) {
             this.ballotId = ballotId;
             this.ballotName = ballotName;
             this.ballotBriefDescription = ballotBriefDescription;
             this.ballotImage = ballotImage;
+            this.votingRecordStatus = votingRecordStatus;
         }
 
-        public static RecordPage of(Ballot ballot) {
+        public static RecordPage of(Ballot ballot, VotingRecordStatus votingRecordStatus) {
             RecordPageBuilder ballotResponseDtoBuilder = RecordPage.builder()
                     .ballotId(ballot.getBallotId())
                     .ballotName(ballot.getBallotName())
-                    .ballotBriefDescription(ballot.getBallotBriefDescription());
+                    .ballotBriefDescription(ballot.getBallotBriefDescription())
+                    .votingRecordStatus(votingRecordStatus.getKorean());
 
             if (ballot.getBallotImage() != null) {
                 ballotResponseDtoBuilder.ballotImage(ballot.getBallotImage().getImagePath());
