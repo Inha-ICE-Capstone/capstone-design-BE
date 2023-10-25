@@ -7,6 +7,7 @@ import com.inha.capstonedesign.auth.jwt.exception.TokenExceptionType;
 import com.inha.capstonedesign.auth.service.AuthService;
 import com.inha.capstonedesign.member.dto.request.MemberRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "https://inha-ice-capstone.vercel.app", allowCredentials = "true")
 public class AuthController {
 
     private final AuthService authService;
@@ -37,14 +39,24 @@ public class AuthController {
         final Long expiration = jwtTokenUtil.getExpiration(refreshToken);
         final Long expirationSecond = expiration / 1000;
 
-        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
+                .path("/")
+                .sameSite("None")
+                .httpOnly(true)
+                .secure(true)
+                .maxAge(expirationSecond)
+                .build();
 
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setMaxAge(expirationSecond.intValue());
+        response.addHeader("Set-Cookie", cookie.toString());
+
+
+//        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+//        refreshTokenCookie.setHttpOnly(true);
+//        refreshTokenCookie.setMaxAge(expirationSecond.intValue());
 //        refreshTokenCookie.setDomain("localhost");
 //        refreshTokenCookie.setSecure(true); // HTTPS에서만 전송
 //        refreshTokenCookie.setPath("/"); // 경로 설정
-        response.addCookie(refreshTokenCookie);
+//        response.addCookie(refreshTokenCookie);
 
 
         return ResponseEntity.ok(tokenDto);
