@@ -37,14 +37,18 @@ public class AuthController {
         final Long expiration = jwtTokenUtil.getExpiration(refreshToken);
         final Long expirationSecond = expiration / 1000;
 
+        /*
+        프론트와 도메인이 달라 이방법을 쓸 수 없으므로 폐기
+
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
 
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setMaxAge(expirationSecond.intValue());
-//        refreshTokenCookie.setDomain("localhost");
-//        refreshTokenCookie.setSecure(true); // HTTPS에서만 전송
-//        refreshTokenCookie.setPath("/"); // 경로 설정
+        refreshTokenCookie.setDomain("localhost");
+        refreshTokenCookie.setSecure(true); // HTTPS에서만 전송
+        refreshTokenCookie.setPath("/"); // 경로 설정
         response.addCookie(refreshTokenCookie);
+        */
 
 
         return ResponseEntity.ok(tokenDto);
