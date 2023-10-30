@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +20,9 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
 
+        Server localServer = new Server().description("로컬 서버").url("http://localhost:8080");
+        Server testServer = new Server().description("배포된 테스트 서버").url("https://www.jookimryu.store");
+
         Info info = new Info()
                 .title("INHA 졸업 프로젝트 API")
                 .version("1.0.0")
@@ -28,7 +32,6 @@ public class SwaggerConfig {
                         .email("jjwm0128@naver.com")
                         .url("https://github.com/zoomin3022"));
 
-        // Security 스키마 설정
         SecurityScheme bearerAuth = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP)
                 .scheme(BEARER)
@@ -43,6 +46,8 @@ public class SwaggerConfig {
         return new OpenAPI()
                 // Security 인증 컴포넌트 설정
                 .components(new Components().addSecuritySchemes(JWT, bearerAuth))
+                .addServersItem(localServer)
+                .addServersItem(testServer)
                 // API 마다 Security 인증 컴포넌트 설정
                 .addSecurityItem(addSecurityItem)
                 .info(info);
