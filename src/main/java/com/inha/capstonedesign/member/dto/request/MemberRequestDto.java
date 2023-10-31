@@ -1,5 +1,6 @@
 package com.inha.capstonedesign.member.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.inha.capstonedesign.member.entity.Gender;
 import com.inha.capstonedesign.member.entity.Member;
 import com.inha.capstonedesign.member.entity.Region;
@@ -19,21 +20,30 @@ public class MemberRequestDto {
     @Getter
     public static class SignUp {
 
+        @Schema(description = "이메일", example = "test@gmail.com")
         @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "이메일 형식에 맞지 않습니다.")
+        @NotNull
         private String memberEmail;
+        @Schema(description = "비밀번호", example = "password11")
         @NotNull
         private String memberPassword;
+        @Schema(description = "이름", example = "주우민")
         @NotNull
         private String memberName;
+        @Schema(description = "닉네임", example = "zoomin")
         @NotNull
         private String memberNickName;
+        @Schema(description = "생년월일", example = "1999-01-28")
         @NotNull
         private LocalDate memberBirthDate;
+        @Schema(description = "성별", example = "남성", allowableValues = {"남성", "여성"})
         @NotNull
         private String memberGender;
+        @Schema(description = "지역", example = "경기도", allowableValues = {"서울", "인천", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도"})
         @NotNull
         private String memberRegion;
 
+        @JsonIgnore
         private Gender setEnumMemberGender(String gender) {
             if (gender.equals(Gender.MALE.getKorean())) {
                 return Gender.MALE;
@@ -42,6 +52,7 @@ public class MemberRequestDto {
             }
         }
 
+        @JsonIgnore
         private Region setEnumMemberRegion(String region) {
             if (region.equals(Region.GYEONGGI.getKorean())) {
                 return Region.GYEONGGI;
@@ -79,13 +90,17 @@ public class MemberRequestDto {
         }
     }
 
+    @Schema(description = "로그인 Request DTO")
     @Getter
     public static class Login {
 
-
-        //@Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "이메일 형식에 맞지 않습니다.")
+        @Schema(description = "이메일", example = "test@gmail.com")
+        @NotNull
+        @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "이메일 형식에 맞지 않습니다.")
         private String memberEmail;
 
+        @Schema(description = "비밀번호", example = "password11")
+        @NotNull
         private String memberPassword;
 
         public UsernamePasswordAuthenticationToken toAuthentication() {

@@ -16,7 +16,7 @@ public class MemberResponseDto {
     private String memberEmail;
     @Schema(description = "이름", example = "주우민")
     private String memberName;
-    @Schema(description = "닉네임", example = "test")
+    @Schema(description = "닉네임", example = "zoomin")
     private String memberNickName;
     @Schema(description = "생년월일", example = "1999-01-28")
     private LocalDate memberBirthDate;
