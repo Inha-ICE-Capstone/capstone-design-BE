@@ -46,8 +46,8 @@ public class SwaggerConfig {
         return new OpenAPI()
                 // Security 인증 컴포넌트 설정
                 .components(new Components().addSecuritySchemes(JWT, bearerAuth))
-                .addServersItem(localServer)
                 .addServersItem(testServer)
+                .addServersItem(localServer)
                 // API 마다 Security 인증 컴포넌트 설정
                 .addSecurityItem(addSecurityItem)
                 .info(info);
