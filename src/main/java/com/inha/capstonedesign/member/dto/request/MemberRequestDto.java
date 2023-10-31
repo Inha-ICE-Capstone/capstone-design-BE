@@ -3,6 +3,7 @@ package com.inha.capstonedesign.member.dto.request;
 import com.inha.capstonedesign.member.entity.Gender;
 import com.inha.capstonedesign.member.entity.Member;
 import com.inha.capstonedesign.member.entity.Region;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
@@ -14,9 +15,9 @@ import java.util.List;
 
 public class MemberRequestDto {
 
+    @Schema(description = "회원 가입 Request DTO")
     @Getter
     public static class SignUp {
-
 
         @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "이메일 형식에 맞지 않습니다.")
         private String memberEmail;

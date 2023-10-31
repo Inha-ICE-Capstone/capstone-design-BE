@@ -3,6 +3,7 @@ package com.inha.capstonedesign.voting.dto.response;
 import com.inha.capstonedesign.voting.entity.Ballot;
 import com.inha.capstonedesign.voting.entity.Candidate;
 import com.inha.capstonedesign.voting.entity.VotingRecordStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -131,12 +132,18 @@ public class BallotResponseDto {
         }
     }
 
+    @Schema(description = "자신의 투표 기록 Response DTO")
     @Getter
     public static class RecordPage {
+        @Schema(description = "DB의 ID", example = "1")
         private Long ballotId;
+        @Schema(description = "투표 제목", example = "대선 투표")
         private String ballotName;
+        @Schema(description = "투표 간략 설명", example = "2022 대선 투표 입니다.")
         private String ballotBriefDescription;
+        @Schema(description = "이미지 URL", example = "www.image.url")
         private String ballotImage;
+        @Schema(description = "투표 기록 상태", example = "투표 완료", allowableValues = {"투표 진행중", "투표 완료", "오류로 인한 투표 취소"})
         private String votingRecordStatus;
 
         @Builder
