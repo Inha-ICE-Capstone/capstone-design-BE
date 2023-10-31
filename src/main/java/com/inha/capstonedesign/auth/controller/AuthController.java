@@ -5,7 +5,17 @@ import com.inha.capstonedesign.auth.jwt.dto.TokenDto;
 import com.inha.capstonedesign.auth.jwt.exception.TokenException;
 import com.inha.capstonedesign.auth.jwt.exception.TokenExceptionType;
 import com.inha.capstonedesign.auth.service.AuthService;
+import com.inha.capstonedesign.global.response.ErrorResponse;
 import com.inha.capstonedesign.member.dto.request.MemberRequestDto;
+import com.inha.capstonedesign.member.dto.response.MemberResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +24,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+@Tag(name = "auth", description = "인증 API")
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
@@ -21,6 +32,11 @@ public class AuthController {
     private final AuthService authService;
     private final JwtTokenUtil jwtTokenUtil;
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "가입 성공", content = @Content),
+            @ApiResponse(responseCode = "404", description = "가입 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "회원 가입", description = "회원 가입 시도")
+    //@Parameter dto만을 파라미터로 받으면 해당 dto @Schema를 작성하면 되므로 생략
     @PostMapping("/members")
     public ResponseEntity<String> signUp(@RequestBody @Valid MemberRequestDto.SignUp signUp) {
         authService.signUp(signUp);
@@ -28,6 +44,10 @@ public class AuthController {
         return ResponseEntity.ok(null);
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공", content = @Content),
+            @ApiResponse(responseCode = "404", description = "로그인 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "로그인", description = "로그인 시도")
     @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@RequestBody MemberRequestDto.Login login, HttpServletResponse response) {
 
@@ -65,12 +85,23 @@ public class AuthController {
 //        return ResponseEntity.ok(reissuedAccessToken);
 //    }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "재발급 성공", content = @Content),
+            @ApiResponse(responseCode = "404", description = "재발급 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "토큰 재발급", description = "토큰 재발급 시도")
+    @Parameters({
+            @Parameter(name = "refreshToken", description = "리프레쉬 토큰", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"),
+    })
     @PostMapping("/reissue")
-    public ResponseEntity<String> reissue(@RequestBody String refreshToken) {
+    public ResponseEntity<String> reissue(@RequestParam String refreshToken) {
         String reissuedAccessToken = authService.reissue(refreshToken);
         return ResponseEntity.ok(reissuedAccessToken);
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공", content = @Content),
+            @ApiResponse(responseCode = "404", description = "로그아웃 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
+    @Operation(summary = "로그아웃", description = "로그아웃 시도")
     @PostMapping("/logout")
     public ResponseEntity<String> logout(
             @CookieValue(value = "refreshToken", required = false) Cookie refreshCookie,
