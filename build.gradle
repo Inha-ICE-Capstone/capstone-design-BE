@@ -63,7 +63,7 @@ dependencies {
 
 	implementation group: 'ca.pjer', name: 'logback-awslogs-appender', version: '1.6.0'
 
-	implementation("org.springdoc:springdoc-openapi-ui:1.6.15")
+	implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
 
 	//querydsl 추가
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
