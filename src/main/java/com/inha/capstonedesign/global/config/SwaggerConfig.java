@@ -20,8 +20,7 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
 
-        Server localServer = new Server().description("로컬 서버").url("http://localhost:8080");
-        Server testServer = new Server().description("배포된 테스트 서버").url("https://www.jookimryu.store");
+        Server testServer = new Server().description("Swagger 테스트 서버").url("https://www.jookimryu.store");
 
         Info info = new Info()
                 .title("INHA 졸업 프로젝트 API")
@@ -47,7 +46,6 @@ public class SwaggerConfig {
                 // Security 인증 컴포넌트 설정
                 .components(new Components().addSecuritySchemes(JWT, bearerAuth))
                 .addServersItem(testServer)
-                .addServersItem(localServer)
                 // API 마다 Security 인증 컴포넌트 설정
                 .addSecurityItem(addSecurityItem)
                 .info(info);
