@@ -1,5 +1,6 @@
 package com.inha.capstonedesign.voting.solidity;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/voting/solidity")
+@Hidden
 public class SolidityController {
 
     private final SolidityService solidityService;
