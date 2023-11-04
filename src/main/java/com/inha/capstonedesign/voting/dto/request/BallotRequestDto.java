@@ -22,9 +22,9 @@ public class BallotRequestDto {
     @Schema(description = "투표 종료 시간", example = "2023-11-11T19:00:00")
     @NotNull
     private LocalDateTime ballotEndDateTime;
-    @Schema(description = "투표 최소 나이", example = "20")
+    @Schema(description = "투표 최소 나이", example = "20", nullable = true)
     private Integer ballotMinAge;
-    @Schema(description = "투표 최대 나이", example = "100")
+    @Schema(description = "투표 최대 나이", example = "100", nullable = true)
     private Integer ballotMaxAge;
     @Schema(description = "투표 가능 지역민", example = "경기도", allowableValues = {"전국", "서울", "인천", "경기도", "강원도", "충청북도", "충청남도", "전라북도", "전라남도", "경상북도", "경상남도"})
     private String ballotSubjectRegion;
