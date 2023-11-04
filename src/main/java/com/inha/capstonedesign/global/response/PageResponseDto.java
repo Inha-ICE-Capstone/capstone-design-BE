@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-@Schema(description = "페이징 처리하고 반환하는 DTO")
+@Schema(name = "PageResponseDto", description = "페이징 처리하고 반환하는 DTO")
 @Getter
 @Setter
 @NoArgsConstructor
