@@ -32,22 +32,15 @@ public class AnalysisService {
         Ballot ballot = ballotRepository.findByBallotId(ballotId)
                 .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
 
-        Long totalCount = votingRecordRepository.countByBallot(ballot);
+        Long maleTotalCount = votingRecordRepository.countByBallotAndVoterMemberGender(ballot, Gender.MALE);
+        Long femaleTotalCount = votingRecordRepository.countByBallotAndVoterMemberGender(ballot, Gender.FEMALE);
         List<Candidate> candidates = ballot.getCandidates();
-//        List<CandidateForAnalysisResponseDto.BasedGender> basedGenders = new ArrayList<>();
-//
-//        Long maleCount = genderRepository.countByCandidateAndGender(candidate, Gender.MALE);
-//        Long femaleCount = genderRepository.countByCandidateAndGender(candidate, Gender.FEMALE);
-//        double maleVotePercentage = (double) maleCount / totalCount * 100.0;
-//        double femaleVotePercentage = (double) femaleCount / totalCount * 100.0;
-//
-//        CandidateForAnalysisResponseDto.BasedGender = CandidateForAnalysisResponseDto.BasedGender.of(candidate, maleCount, femaleCount, maleVotePercentage, femaleVotePercentage);
 
         List<CandidateForAnalysisResponseDto.BasedGender> basedGenders = candidates.stream().map(candidate -> {
             Long maleCount = genderRepository.countByCandidateAndGender(candidate, Gender.MALE);
             Long femaleCount = genderRepository.countByCandidateAndGender(candidate, Gender.FEMALE);
-            double maleVotePercentage = totalCount > 0 ? (double) maleCount / totalCount * 100.0 : 0.0;
-            double femaleVotePercentage = totalCount > 0 ? (double) femaleCount / totalCount * 100.0 : 0.0;
+            double maleVotePercentage = maleTotalCount > 0 ? (double) maleCount / maleTotalCount * 100.0 : 0.0;
+            double femaleVotePercentage = femaleTotalCount > 0 ? (double) femaleCount / femaleTotalCount * 100.0 : 0.0;
 
             return CandidateForAnalysisResponseDto.BasedGender.of(candidate, maleCount, femaleCount, maleVotePercentage, femaleVotePercentage);
         }).collect(Collectors.toList());
