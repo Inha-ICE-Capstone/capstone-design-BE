@@ -1,4 +1,4 @@
-package com.inha.capstonedesign.voting.entity.analysis.age;
+package com.inha.capstonedesign.analysis.entity.age;
 
 public enum AgeGroup {
     TEENS_OR_LESS("10대 이하"),

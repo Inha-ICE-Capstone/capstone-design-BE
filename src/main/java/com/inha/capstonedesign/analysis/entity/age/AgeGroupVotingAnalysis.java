@@ -1,4 +1,4 @@
-package com.inha.capstonedesign.voting.entity.analysis.age;
+package com.inha.capstonedesign.analysis.entity.age;
 
 import com.inha.capstonedesign.voting.entity.Candidate;
 import lombok.AccessLevel;
