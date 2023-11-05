@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface VotingRecordRepository extends JpaRepository<VotingRecord, Long> {
 
     Optional<VotingRecord> findByVoterAndBallot(Member member, Ballot ballot);
+    Long countByBallot(Ballot ballot);
 
     @EntityGraph(attributePaths = {"ballot", "ballot.ballotImage"})
     Page<VotingRecord> findByVoterOrderByVotingRecordIdDesc(Member member, Pageable pageable);
