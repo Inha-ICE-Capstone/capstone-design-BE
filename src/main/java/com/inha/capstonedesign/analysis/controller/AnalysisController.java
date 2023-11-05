@@ -31,7 +31,7 @@ public class AnalysisController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "404", description = "조회 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))})
-    @Operation(summary = "후보자들의 성별 득표율", description = "후보자들의 남성 여성 득표율, 득표수를 반환")
+    @Operation(summary = "후보자들의 성별 득표율", description = "선택한 투표 내의 후보자들의 남성 여성 득표율, 득표수를 반환")
     @Parameters({
             @Parameter(name = "ballotId", description = "투표의 DB Id", example = "1"),
     })
