@@ -141,8 +141,10 @@ public class VotingService {
         Ballot ballot = ballotRepository.findByBallotId(voteDto.getBallotId())
                 .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
 
-        verifyBallotStatus(ballot);
+        Candidate candidate = candidateRepository.findByCandidateIdAndBallot(voteDto.getCandidateId(), ballot)
+                .orElseThrow(() -> new VotingException(VotingExceptionType.CANDIDATE_NOT_EXISTS));
 
+        verifyBallotStatus(ballot);
         if (!verifySubject(member, ballot)) {
             throw new VotingException(VotingExceptionType.NOT_SUBJECT);
         }
