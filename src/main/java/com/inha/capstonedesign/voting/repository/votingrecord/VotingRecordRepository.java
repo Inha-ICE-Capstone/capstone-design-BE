@@ -1,4 +1,4 @@
-package com.inha.capstonedesign.voting.repository;
+package com.inha.capstonedesign.voting.repository.votingrecord;
 
 import com.inha.capstonedesign.member.entity.Gender;
 import com.inha.capstonedesign.member.entity.Member;
@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface VotingRecordRepository extends JpaRepository<VotingRecord, Long> {
+public interface VotingRecordRepository extends JpaRepository<VotingRecord, Long>, VotingRecordQuerydslRepository {
 
     Optional<VotingRecord> findByVoterAndBallot(Member member, Ballot ballot);
     Long countByBallotAndVoterMemberGenderAndVotingRecordStatus(Ballot ballot, Gender gender, VotingRecordStatus votingRecordStatus);
