@@ -1,6 +1,8 @@
 package com.inha.capstonedesign.analysis.service;
 
 import com.inha.capstonedesign.analysis.dto.response.CandidateForAnalysisResponseDto;
+import com.inha.capstonedesign.analysis.entity.age.AgeGroup;
+import com.inha.capstonedesign.analysis.repository.agegroup.AgeGroupVotingAnalysisRepository;
 import com.inha.capstonedesign.analysis.repository.GenderVotingAnalysisRepository;
 import com.inha.capstonedesign.analysis.repository.RegionVotingAnalysisRepository;
 import com.inha.capstonedesign.member.entity.Gender;
@@ -11,7 +13,7 @@ import com.inha.capstonedesign.voting.entity.VotingRecordStatus;
 import com.inha.capstonedesign.voting.exception.VotingException;
 import com.inha.capstonedesign.voting.exception.VotingExceptionType;
 import com.inha.capstonedesign.voting.repository.CandidateRepository;
-import com.inha.capstonedesign.voting.repository.VotingRecordRepository;
+import com.inha.capstonedesign.voting.repository.votingrecord.VotingRecordRepository;
 import com.inha.capstonedesign.voting.repository.ballot.BallotRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ public class AnalysisService {
 
     private final GenderVotingAnalysisRepository genderRepository;
     private final RegionVotingAnalysisRepository regionRepository;
+    private final AgeGroupVotingAnalysisRepository ageGroupRepository;
     private final CandidateRepository candidateRepository;
     private final BallotRepository ballotRepository;
     private final VotingRecordRepository votingRecordRepository;
@@ -89,5 +92,34 @@ public class AnalysisService {
         }).collect(Collectors.toList());
 
         return basedRegions;
+    }
+
+    public List<CandidateForAnalysisResponseDto.BasedAgeGroup> getAgeGroupAnalysis(Long ballotId) {
+
+        Ballot ballot = ballotRepository.findByBallotId(ballotId)
+                .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
+
+        Map<AgeGroup, Long> ageGroupTotalCounts = new EnumMap<>(AgeGroup.class);
+        for (AgeGroup ageGroup : AgeGroup.values()) {
+            long count = votingRecordRepository.countByBallotAndAgeGroup(ballot, ageGroup, VotingRecordStatus.COMPLETED);
+            ageGroupTotalCounts.put(ageGroup, count);
+        }
+        List<Candidate> candidates = ballot.getCandidates();
+
+        List<CandidateForAnalysisResponseDto.BasedAgeGroup> basedAgeGroups = candidates.stream().map(candidate -> {
+            Map<AgeGroup, Long> ageGroupCounts = new EnumMap<>(AgeGroup.class);
+            Map<AgeGroup, Double> ageGroupPercentages = new EnumMap<>(AgeGroup.class);
+
+            for (AgeGroup ageGroup : AgeGroup.values()) {
+                long count = ageGroupRepository.countByCandidateAndAgeGroup(candidate, ageGroup);
+                ageGroupCounts.put(ageGroup, count);
+                double percentage = ageGroupTotalCounts.get(ageGroup) > 0 ? (double) ageGroupCounts.get(ageGroup) / ageGroupTotalCounts.get(ageGroup) * 100.0 : 0.0;
+                ageGroupPercentages.put(ageGroup, percentage);
+            }
+
+            return CandidateForAnalysisResponseDto.BasedAgeGroup.of(candidate, ageGroupPercentages, ageGroupCounts);
+        }).collect(Collectors.toList());
+
+        return basedAgeGroups;
     }
 }

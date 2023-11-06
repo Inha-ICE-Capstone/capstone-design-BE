@@ -10,7 +10,7 @@ import com.inha.capstonedesign.voting.dto.response.BallotResponseDto;
 import com.inha.capstonedesign.voting.entity.Ballot;
 import com.inha.capstonedesign.voting.entity.VotingRecord;
 import com.inha.capstonedesign.voting.entity.VotingRecordStatus;
-import com.inha.capstonedesign.voting.repository.VotingRecordRepository;
+import com.inha.capstonedesign.voting.repository.votingrecord.VotingRecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
