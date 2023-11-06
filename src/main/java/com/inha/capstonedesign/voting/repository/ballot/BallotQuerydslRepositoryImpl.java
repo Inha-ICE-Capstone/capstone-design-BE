@@ -74,7 +74,7 @@ public class BallotQuerydslRepositoryImpl implements BallotQuerydslRepository {
                 .fetch();
     }
 
-    private static BallotStatus getBallotStatusFromString(String status) {
+    private BallotStatus getBallotStatusFromString(String status) {
         if (status == null) {
             return BallotStatus.IN_PROGRESS;
         }
