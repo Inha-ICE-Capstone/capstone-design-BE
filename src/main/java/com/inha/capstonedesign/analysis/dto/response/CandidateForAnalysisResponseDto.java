@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 @Getter
@@ -27,9 +27,9 @@ public class CandidateForAnalysisResponseDto {
         @Schema(description = "이미지 URL", example = "www.image.url")
         private String candidateImage;
         @Schema(description = "성별별 득표율", example = "{\"남성\": 33.33333, \"여성\": 39.33333}")
-        private Map<Gender, Double> genderPercentage = new HashMap<>();
+        private Map<Gender, Double> genderPercentage = new EnumMap<>(Gender.class);
         @Schema(description = "성별별 득표수", example = "{\"남성\": 3, \"여성\": 3}")
-        private Map<Gender, Long> genderVoteCount = new HashMap<>();
+        private Map<Gender, Long> genderVoteCount = new EnumMap<>(Gender.class);
 
         public static BasedGender of(Candidate candidate, Map<Gender, Double> genderPercentage, Map<Gender, Long> genderVoteCount) {
             BasedGenderBuilder builder = BasedGender.builder()
