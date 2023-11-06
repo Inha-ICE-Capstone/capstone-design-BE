@@ -2,6 +2,7 @@ package com.inha.capstonedesign.voting.repository;
 
 import com.inha.capstonedesign.member.entity.Gender;
 import com.inha.capstonedesign.member.entity.Member;
+import com.inha.capstonedesign.member.entity.Region;
 import com.inha.capstonedesign.voting.entity.Ballot;
 import com.inha.capstonedesign.voting.entity.VotingRecord;
 import com.inha.capstonedesign.voting.entity.VotingRecordStatus;
@@ -16,6 +17,7 @@ public interface VotingRecordRepository extends JpaRepository<VotingRecord, Long
 
     Optional<VotingRecord> findByVoterAndBallot(Member member, Ballot ballot);
     Long countByBallotAndVoterMemberGenderAndVotingRecordStatus(Ballot ballot, Gender gender, VotingRecordStatus votingRecordStatus);
+    Long countByBallotAndVoterMemberRegionAndVotingRecordStatus(Ballot ballot, Region region, VotingRecordStatus votingRecordStatus);
 
     @EntityGraph(attributePaths = {"ballot", "ballot.ballotImage"})
     Page<VotingRecord> findByVoterOrderByVotingRecordIdDesc(Member member, Pageable pageable);

@@ -2,7 +2,9 @@ package com.inha.capstonedesign.analysis.service;
 
 import com.inha.capstonedesign.analysis.dto.response.CandidateForAnalysisResponseDto;
 import com.inha.capstonedesign.analysis.repository.GenderVotingAnalysisRepository;
+import com.inha.capstonedesign.analysis.repository.RegionVotingAnalysisRepository;
 import com.inha.capstonedesign.member.entity.Gender;
+import com.inha.capstonedesign.member.entity.Region;
 import com.inha.capstonedesign.voting.entity.Ballot;
 import com.inha.capstonedesign.voting.entity.Candidate;
 import com.inha.capstonedesign.voting.entity.VotingRecordStatus;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 public class AnalysisService {
 
     private final GenderVotingAnalysisRepository genderRepository;
+    private final RegionVotingAnalysisRepository regionRepository;
     private final CandidateRepository candidateRepository;
     private final BallotRepository ballotRepository;
     private final VotingRecordRepository votingRecordRepository;
@@ -57,5 +60,34 @@ public class AnalysisService {
         }).collect(Collectors.toList());
 
         return basedGenders;
+    }
+
+    public List<CandidateForAnalysisResponseDto.BasedRegion> getRegionAnalysis(Long ballotId) {
+
+        Ballot ballot = ballotRepository.findByBallotId(ballotId)
+                .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
+
+        Map<Region, Long> regionTotalCounts = new EnumMap<>(Region.class);
+        for (Region region : Region.values()) {
+            long count = votingRecordRepository.countByBallotAndVoterMemberRegionAndVotingRecordStatus(ballot, region, VotingRecordStatus.COMPLETED);
+            regionTotalCounts.put(region, count);
+        }
+        List<Candidate> candidates = ballot.getCandidates();
+
+        List<CandidateForAnalysisResponseDto.BasedRegion> basedRegions = candidates.stream().map(candidate -> {
+            Map<Region, Long> regionCounts = new EnumMap<>(Region.class);
+            Map<Region, Double> regionPercentages = new EnumMap<>(Region.class);
+
+            for (Region region : Region.values()) {
+                long count = regionRepository.countByCandidateAndRegion(candidate, region);
+                regionCounts.put(region, count);
+                double percentage = regionTotalCounts.get(region) > 0 ? (double) regionCounts.get(region) / regionTotalCounts.get(region) * 100.0 : 0.0;
+                regionPercentages.put(region, percentage);
+            }
+
+            return CandidateForAnalysisResponseDto.BasedRegion.of(candidate, regionPercentages, regionCounts);
+        }).collect(Collectors.toList());
+
+        return basedRegions;
     }
 }
