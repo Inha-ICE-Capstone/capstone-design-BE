@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigInteger;
 import java.util.List;
 
+@Hidden
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/voting/solidity")
-@Hidden
 public class SolidityController {
 
     private final SolidityService solidityService;
