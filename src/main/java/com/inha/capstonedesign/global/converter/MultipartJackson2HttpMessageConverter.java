@@ -19,8 +19,9 @@ import java.lang.reflect.Type;
  * ObjectMapper 에 의해 바이트 배열 또는 문자열 형태로 처리하는데 Jackson 은 JSON 형태의 데이터를 처리하므로
  * application/octet-stream 가 JSON 형태가 아니라면 오류가 발생할 수 있고 JSON 형태라면 application/json 타입을 받은것처럼 처리한다.
  * 그리모 도든 write 메소드를 false 로 오버라이딩 함으로써 읽기만 가능하고 Java 객체를 HTTP Response 하는 작업은 지원하지 않는다.
+ *
  * 해당 에러는 아래와 같음
- * 2023-11-04 14:57:40.065  WARN 15408 --- [nio-8080-exec-8] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unexpected end-of-input: expected close marker for Object (start marker at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 1]); nested exception is com.fasterxml.jackson.core.io.JsonEOFException: Unexpected end-of-input: expected close marker for Object (start marker at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 1])<EOL> at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 11, column: 1]]
+ * WARN 15408 --- [nio-8080-exec-8] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Unexpected end-of-input: expected close marker for Object (start marker at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 1]); nested exception is com.fasterxml.jackson.core.io.JsonEOFException: Unexpected end-of-input: expected close marker for Object (start marker at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 1])<EOL> at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 11, column: 1]]
  */
 @Component
 public class MultipartJackson2HttpMessageConverter extends AbstractJackson2HttpMessageConverter {
