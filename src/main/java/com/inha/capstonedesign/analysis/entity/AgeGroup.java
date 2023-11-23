@@ -6,8 +6,7 @@ public enum AgeGroup {
     THIRTIES("30대"),
     FORTIES("40대"),
     FIFTIES("50대"),
-    SIXTIES("60대"),
-    SEVENTIES_OR_ABOVE("70대이상");
+    SIXTIES_OR_ABOVE("60대이상");
 
     private String korean;
 

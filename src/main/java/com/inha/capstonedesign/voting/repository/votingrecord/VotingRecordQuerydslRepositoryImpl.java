@@ -41,10 +41,8 @@ public class VotingRecordQuerydslRepositoryImpl implements VotingRecordQuerydslR
             return member.memberAge.between(40, 49);
         } else if (ageGroup.equals(AgeGroup.FIFTIES)) {
             return member.memberAge.between(50, 59);
-        } else if (ageGroup.equals(AgeGroup.SIXTIES)) {
-            return member.memberAge.between(60, 69);
         } else {
-            return member.memberAge.between(70, 200);
+            return member.memberAge.between(60, 200);
         }
     }
 }

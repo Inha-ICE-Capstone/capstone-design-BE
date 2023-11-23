@@ -109,10 +109,8 @@ public class Member implements UserDetails {
             return AgeGroup.FORTIES;
         } else if (this.memberAge < 60) {
             return AgeGroup.FIFTIES;
-        } else if (this.memberAge < 70) {
-            return AgeGroup.SIXTIES;
         } else {
-            return AgeGroup.SEVENTIES_OR_ABOVE;
+            return AgeGroup.SIXTIES_OR_ABOVE;
         }
     }
 
