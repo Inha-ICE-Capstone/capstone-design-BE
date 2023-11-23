@@ -1,5 +1,7 @@
 package com.inha.capstonedesign.voting.service;
 
+import com.inha.capstonedesign.analysis.entity.VotingAnalysis;
+import com.inha.capstonedesign.analysis.repository.VotingAnalysisRepository;
 import com.inha.capstonedesign.auth.exception.AuthException;
 import com.inha.capstonedesign.auth.exception.AuthExceptionType;
 import com.inha.capstonedesign.global.response.PageResponseDto;
@@ -16,16 +18,10 @@ import com.inha.capstonedesign.voting.dto.request.CandidateRequestDto;
 import com.inha.capstonedesign.voting.dto.request.VoteRequestDto;
 import com.inha.capstonedesign.voting.dto.response.BallotResponseDto;
 import com.inha.capstonedesign.voting.entity.*;
-import com.inha.capstonedesign.analysis.entity.age.AgeGroupVotingAnalysis;
-import com.inha.capstonedesign.analysis.entity.gender.GenderVotingAnalysis;
-import com.inha.capstonedesign.analysis.entity.region.RegionVotingAnalysis;
 import com.inha.capstonedesign.voting.exception.VotingException;
 import com.inha.capstonedesign.voting.exception.VotingExceptionType;
 import com.inha.capstonedesign.voting.repository.CandidateRepository;
 import com.inha.capstonedesign.voting.repository.votingrecord.VotingRecordRepository;
-import com.inha.capstonedesign.analysis.repository.agegroup.AgeGroupVotingAnalysisRepository;
-import com.inha.capstonedesign.analysis.repository.GenderVotingAnalysisRepository;
-import com.inha.capstonedesign.analysis.repository.RegionVotingAnalysisRepository;
 import com.inha.capstonedesign.voting.repository.ballot.BallotRepository;
 import com.inha.capstonedesign.voting.solidity.Voting;
 import lombok.RequiredArgsConstructor;
@@ -63,9 +59,7 @@ public class VotingService {
     private final CandidateRepository candidateRepository;
     private final VotingRecordRepository votingRecordRepository;
 
-    private final AgeGroupVotingAnalysisRepository ageGroupRepository;
-    private final GenderVotingAnalysisRepository genderRepository;
-    private final RegionVotingAnalysisRepository regionRepository;
+    private final VotingAnalysisRepository votingAnalysisRepository;
 
     private final ImageUploadService imageUploadService;
 
@@ -182,9 +176,9 @@ public class VotingService {
             candidate.incrementCandidateVoteCount();
             votingRecord.changeVotingRecordStatus(VotingRecordStatus.COMPLETED);
 
-            ageGroupRepository.save(new AgeGroupVotingAnalysis(member.getAgeGroup(), candidate));
-            genderRepository.save(new GenderVotingAnalysis(member.getMemberGender(), candidate));
-            regionRepository.save(new RegionVotingAnalysis(member.getMemberRegion(), candidate));
+
+            votingAnalysisRepository.save(new VotingAnalysis
+                                        (member.getAgeGroup(), member.getMemberGender(), member.getMemberRegion(), candidate));
 
         } catch (Exception e) {
             votingRecord.changeVotingRecordStatus(VotingRecordStatus.CANCELLED_ERROR);
