@@ -1,10 +1,7 @@
 package com.inha.capstonedesign.analysis.service;
 
 import com.inha.capstonedesign.analysis.dto.response.CandidateForAnalysisResponseDto;
-import com.inha.capstonedesign.analysis.entity.age.AgeGroup;
-import com.inha.capstonedesign.analysis.repository.agegroup.AgeGroupVotingAnalysisRepository;
-import com.inha.capstonedesign.analysis.repository.GenderVotingAnalysisRepository;
-import com.inha.capstonedesign.analysis.repository.RegionVotingAnalysisRepository;
+import com.inha.capstonedesign.analysis.entity.AgeGroup;
 import com.inha.capstonedesign.member.entity.Gender;
 import com.inha.capstonedesign.member.entity.Region;
 import com.inha.capstonedesign.voting.entity.Ballot;
@@ -29,9 +26,6 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class AnalysisService {
 
-    private final GenderVotingAnalysisRepository genderRepository;
-    private final RegionVotingAnalysisRepository regionRepository;
-    private final AgeGroupVotingAnalysisRepository ageGroupRepository;
     private final CandidateRepository candidateRepository;
     private final BallotRepository ballotRepository;
     private final VotingRecordRepository votingRecordRepository;
@@ -53,7 +47,6 @@ public class AnalysisService {
             Map<Gender, Double> genderPercentages = new EnumMap<>(Gender.class);
 
             for (Gender gender : Gender.values()) {
-                long count = genderRepository.countByCandidateAndGender(candidate, gender);
                 genderCounts.put(gender, count);
                 double percentage = genderTotalCounts.get(gender) > 0 ? (double) genderCounts.get(gender) / genderTotalCounts.get(gender) * 100.0 : 0.0;
                 genderPercentages.put(gender, percentage);
@@ -82,7 +75,6 @@ public class AnalysisService {
             Map<Region, Double> regionPercentages = new EnumMap<>(Region.class);
 
             for (Region region : Region.values()) {
-                long count = regionRepository.countByCandidateAndRegion(candidate, region);
                 regionCounts.put(region, count);
                 double percentage = regionTotalCounts.get(region) > 0 ? (double) regionCounts.get(region) / regionTotalCounts.get(region) * 100.0 : 0.0;
                 regionPercentages.put(region, percentage);
@@ -111,7 +103,6 @@ public class AnalysisService {
             Map<AgeGroup, Double> ageGroupPercentages = new EnumMap<>(AgeGroup.class);
 
             for (AgeGroup ageGroup : AgeGroup.values()) {
-                long count = ageGroupRepository.countByCandidateAndAgeGroup(candidate, ageGroup);
                 ageGroupCounts.put(ageGroup, count);
                 double percentage = ageGroupTotalCounts.get(ageGroup) > 0 ? (double) ageGroupCounts.get(ageGroup) / ageGroupTotalCounts.get(ageGroup) * 100.0 : 0.0;
                 ageGroupPercentages.put(ageGroup, percentage);

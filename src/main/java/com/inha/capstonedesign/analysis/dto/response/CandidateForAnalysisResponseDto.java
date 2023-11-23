@@ -1,6 +1,6 @@
 package com.inha.capstonedesign.analysis.dto.response;
 
-import com.inha.capstonedesign.analysis.entity.age.AgeGroup;
+import com.inha.capstonedesign.analysis.entity.AgeGroup;
 import com.inha.capstonedesign.member.entity.Gender;
 import com.inha.capstonedesign.member.entity.Region;
 import com.inha.capstonedesign.voting.entity.Candidate;
