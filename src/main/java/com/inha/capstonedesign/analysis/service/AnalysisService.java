@@ -10,9 +10,8 @@ import com.inha.capstonedesign.voting.entity.Candidate;
 import com.inha.capstonedesign.voting.entity.VotingRecordStatus;
 import com.inha.capstonedesign.voting.exception.VotingException;
 import com.inha.capstonedesign.voting.exception.VotingExceptionType;
-import com.inha.capstonedesign.voting.repository.CandidateRepository;
-import com.inha.capstonedesign.voting.repository.votingrecord.VotingRecordRepository;
 import com.inha.capstonedesign.voting.repository.ballot.BallotRepository;
+import com.inha.capstonedesign.voting.repository.votingrecord.VotingRecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,35 +29,6 @@ public class AnalysisService {
     private final VotingAnalysisRepository votingAnalysisRepository;
     private final BallotRepository ballotRepository;
     private final VotingRecordRepository votingRecordRepository;
-
-    public List<CandidateForAnalysisResponseDto.BasedGender> getGenderAnalysis(Long ballotId) {
-
-        Ballot ballot = ballotRepository.findByBallotId(ballotId)
-                .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
-
-        Map<Gender, Long> genderTotalCounts = new EnumMap<>(Gender.class);
-        for (Gender gender : Gender.values()) {
-            long count = votingRecordRepository.countByBallotAndVoterMemberGenderAndVotingRecordStatus(ballot, gender, VotingRecordStatus.COMPLETED);
-            genderTotalCounts.put(gender, count);
-        }
-        List<Candidate> candidates = ballot.getCandidates();
-
-        List<CandidateForAnalysisResponseDto.BasedGender> basedGenders = candidates.stream().map(candidate -> {
-            Map<Gender, Long> genderCounts = new EnumMap<>(Gender.class);
-            Map<Gender, Double> genderPercentages = new EnumMap<>(Gender.class);
-
-            for (Gender gender : Gender.values()) {
-                long count = votingAnalysisRepository.countByCandidateAndGender(candidate, gender);
-                genderCounts.put(gender, count);
-                double percentage = genderTotalCounts.get(gender) > 0 ? (double) genderCounts.get(gender) / genderTotalCounts.get(gender) * 100.0 : 0.0;
-                genderPercentages.put(gender, percentage);
-            }
-
-            return CandidateForAnalysisResponseDto.BasedGender.of(candidate, genderPercentages, genderCounts);
-        }).collect(Collectors.toList());
-
-        return basedGenders;
-    }
 
     public List<CandidateForAnalysisResponseDto.BasedRegion> getRegionAnalysis(Long ballotId) {
 
@@ -89,32 +59,43 @@ public class AnalysisService {
         return basedRegions;
     }
 
-    public List<CandidateForAnalysisResponseDto.BasedAgeGroup> getAgeGroupAnalysis(Long ballotId) {
+    public List<CandidateForAnalysisResponseDto.BasedAgeGroupAndGender> getAgeGroupAndGenderAnalysis(Long ballotId) {
 
         Ballot ballot = ballotRepository.findByBallotId(ballotId)
                 .orElseThrow(() -> new VotingException(VotingExceptionType.BALLOT_NOT_EXISTS));
 
-        Map<AgeGroup, Long> ageGroupTotalCounts = new EnumMap<>(AgeGroup.class);
+        Map<AgeGroup, Map<Gender, Long>> ageGroupTotalCounts = new EnumMap<>(AgeGroup.class);
         for (AgeGroup ageGroup : AgeGroup.values()) {
-            long count = votingRecordRepository.countByBallotAndAgeGroup(ballot, ageGroup, VotingRecordStatus.COMPLETED);
-            ageGroupTotalCounts.put(ageGroup, count);
+            EnumMap<Gender, Long> genderCounts = new EnumMap<>(Gender.class);
+            for (Gender gender : Gender.values()) {
+                long count = votingRecordRepository.countByBallotAndAgeGroupAndGender(ballot, ageGroup, gender, VotingRecordStatus.COMPLETED);
+                genderCounts.put(gender, count);
+                ageGroupTotalCounts.put(ageGroup, genderCounts);
+            }
         }
         List<Candidate> candidates = ballot.getCandidates();
 
-        List<CandidateForAnalysisResponseDto.BasedAgeGroup> basedAgeGroups = candidates.stream().map(candidate -> {
-            Map<AgeGroup, Long> ageGroupCounts = new EnumMap<>(AgeGroup.class);
-            Map<AgeGroup, Double> ageGroupPercentages = new EnumMap<>(AgeGroup.class);
+        List<CandidateForAnalysisResponseDto.BasedAgeGroupAndGender> basedAgeGroupAndGenders = candidates.stream().map(candidate -> {
+            Map<AgeGroup, Map<Gender, Long>> ageGroupCounts = new EnumMap<>(AgeGroup.class);
+            Map<AgeGroup, Map<Gender, Double>> ageGroupPercentages = new EnumMap<>(AgeGroup.class);
 
             for (AgeGroup ageGroup : AgeGroup.values()) {
-                long count = votingAnalysisRepository.countByCandidateAndAgeGroup(candidate, ageGroup);
-                ageGroupCounts.put(ageGroup, count);
-                double percentage = ageGroupTotalCounts.get(ageGroup) > 0 ? (double) ageGroupCounts.get(ageGroup) / ageGroupTotalCounts.get(ageGroup) * 100.0 : 0.0;
-                ageGroupPercentages.put(ageGroup, percentage);
-            }
+                EnumMap<Gender, Long> genderCounts = new EnumMap<>(Gender.class);
+                EnumMap<Gender, Double> genderPercentages = new EnumMap<>(Gender.class);
+                for (Gender gender : Gender.values()) {
+                    long count = votingAnalysisRepository.countByCandidateAndAgeGroupAndGender(candidate, ageGroup, gender);
 
-            return CandidateForAnalysisResponseDto.BasedAgeGroup.of(candidate, ageGroupPercentages, ageGroupCounts);
+                    double percentage = ageGroupTotalCounts.get(ageGroup).get(gender) > 0 ? (double) count / ageGroupTotalCounts.get(ageGroup).get(gender) * 100.0 : 0.0;
+                    genderCounts.put(gender, count);
+                    genderPercentages.put(gender, percentage);
+
+                    ageGroupCounts.put(ageGroup, genderCounts);
+                    ageGroupPercentages.put(ageGroup, genderPercentages);
+                }
+            }
+            return CandidateForAnalysisResponseDto.BasedAgeGroupAndGender.of(candidate, ageGroupPercentages, ageGroupCounts);
         }).collect(Collectors.toList());
 
-        return basedAgeGroups;
+        return basedAgeGroupAndGenders;
     }
 }

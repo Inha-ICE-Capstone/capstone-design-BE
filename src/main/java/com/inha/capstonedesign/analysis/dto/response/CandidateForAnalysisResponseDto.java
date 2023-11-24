@@ -85,7 +85,7 @@ public class CandidateForAnalysisResponseDto {
     @Builder
     @AllArgsConstructor
     @Getter
-    public static class BasedAgeGroup {
+    public static class BasedAgeGroupAndGender {
         @Schema(description = "후보자의 DB 에 기록된 ID", example = "1")
         private Long candidateId;
         @Schema(description = "후보자 이름", example = "주우민")
@@ -95,12 +95,12 @@ public class CandidateForAnalysisResponseDto {
         @Schema(description = "이미지 URL", example = "www.image.url")
         private String candidateImage;
         @Schema(description = "지역별 득표율", example = "{\"10대이하\": 33.33333, \"20대\": 33.33333, \"30대\": 33.33333, \"40대\": 33.33333, \"50대\": 33.33333, \"60대\": 33.33333, \"70대 이상\": 33.33333}")
-        private Map<AgeGroup, Double> ageGroupPercentage = new EnumMap<>(AgeGroup.class);
+        private Map<AgeGroup, Map<Gender, Double>> ageGroupPercentage = new EnumMap<>(AgeGroup.class);
         @Schema(description = "지역별 득표수", example = "{\"10대이하\": 3, \"20대\": 3, \"30대\": 3, \"40대\": 3, \"50대\": 3, \"60대\": 3, \"70대 이상\": 3}")
-        private Map<AgeGroup, Long> ageGroupVoteCount = new EnumMap<>(AgeGroup.class);
+        private Map<AgeGroup, Map<Gender, Long>> ageGroupVoteCount = new EnumMap<>(AgeGroup.class);
 
-        public static BasedAgeGroup of(Candidate candidate, Map<AgeGroup, Double> ageGroupPercentage, Map<AgeGroup, Long> ageGroupVoteCount) {
-            BasedAgeGroupBuilder builder = BasedAgeGroup.builder()
+        public static BasedAgeGroupAndGender of(Candidate candidate, Map<AgeGroup, Map<Gender, Double>> ageGroupPercentage, Map<AgeGroup, Map<Gender, Long>> ageGroupVoteCount) {
+            BasedAgeGroupAndGenderBuilder builder = BasedAgeGroupAndGender.builder()
                     .candidateId(candidate.getCandidateId())
                     .candidateName(candidate.getCandidateName())
                     .candidateVoteCount(candidate.getCandidateVoteCount())
