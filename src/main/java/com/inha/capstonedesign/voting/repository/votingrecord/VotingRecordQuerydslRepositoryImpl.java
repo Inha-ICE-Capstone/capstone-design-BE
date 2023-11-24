@@ -1,6 +1,7 @@
 package com.inha.capstonedesign.voting.repository.votingrecord;
 
 import com.inha.capstonedesign.analysis.entity.AgeGroup;
+import com.inha.capstonedesign.member.entity.Gender;
 import com.inha.capstonedesign.member.entity.QMember;
 import com.inha.capstonedesign.voting.entity.Ballot;
 import com.inha.capstonedesign.voting.entity.VotingRecordStatus;
@@ -20,13 +21,13 @@ public class VotingRecordQuerydslRepositoryImpl implements VotingRecordQuerydslR
 
 
     @Override
-    public Long countByBallotAndAgeGroup(Ballot ballot, AgeGroup ageGroup, VotingRecordStatus votingRecordStatus) {
+    public Long countByBallotAndAgeGroupAndGender(Ballot ballot, AgeGroup ageGroup, Gender gender, VotingRecordStatus votingRecordStatus) {
 
         return queryFactory.select(Wildcard.count)
                 .from(votingRecord)
                 .join(votingRecord.voter, member)
-                .where(findAgeGroup(votingRecord.voter, ageGroup), votingRecord.ballot.eq(ballot),
-                        votingRecord.votingRecordStatus.eq(votingRecordStatus))
+                .where(findAgeGroup(votingRecord.voter, ageGroup), votingRecord.voter.memberGender.eq(gender),
+                        votingRecord.ballot.eq(ballot), votingRecord.votingRecordStatus.eq(votingRecordStatus))
                 .fetchOne();
     }
 

@@ -1,6 +1,7 @@
 package com.inha.capstonedesign.analysis.repository;
 
 import com.inha.capstonedesign.analysis.entity.AgeGroup;
+import com.inha.capstonedesign.member.entity.Gender;
 import com.inha.capstonedesign.voting.entity.Candidate;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -15,10 +16,10 @@ public class VotingAnalysisQuerydslRepositoryImpl implements VotingAnalysisQuery
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Long countByCandidateAndAgeGroup(Candidate candidate, AgeGroup ageGroup) {
+    public Long countByCandidateAndAgeGroupAndGender(Candidate candidate, AgeGroup ageGroup, Gender gender) {
         return queryFactory.select(Wildcard.count)
                 .from(votingAnalysis)
-                .where(votingAnalysis.ageGroup.eq(ageGroup), votingAnalysis.candidate.eq(candidate))
+                .where(votingAnalysis.ageGroup.eq(ageGroup), votingAnalysis.gender.eq(gender), votingAnalysis.candidate.eq(candidate))
                 .fetchOne();
     }
 }
