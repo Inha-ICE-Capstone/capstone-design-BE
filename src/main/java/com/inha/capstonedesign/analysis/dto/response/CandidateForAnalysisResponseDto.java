@@ -48,7 +48,7 @@ public class CandidateForAnalysisResponseDto {
         }
     }
 
-    @Schema(description = "분석에 사용될 후보자별 최종 성적의 연령대 관련 정보")
+    @Schema(description = "분석에 사용될 후보자별 최종 성적의 세대별 성별 관련 정보")
     @Builder
     @AllArgsConstructor
     @Getter
@@ -61,9 +61,9 @@ public class CandidateForAnalysisResponseDto {
         private Integer candidateVoteCount;
         @Schema(description = "이미지 URL", example = "www.image.url")
         private String candidateImage;
-        @Schema(description = "연령대 및 성별별 지표", example = "{\"TEENS_OR_LESS\": {\"MALE\": 0, \"FEMALE\": 0}, \"TWENTIES\": {\"MALE\": 100, \"FEMALE\": 50}, \"THIRTIES\": {\"MALE\": 50, \"FEMALE\": 100}, \"FORTIES\": {\"MALE\": 0, \"FEMALE\": 0}, \"FIFTIES\": {\"MALE\": 0, \"FEMALE\": 0}, \"SIXTIES_OR_ABOVE\": {\"MALE\": 0, \"FEMALE\": 100}}")
+        @Schema(description = "세대별 및 성별 득표율", example = "{\"TEENS_OR_LESS\": {\"MALE\": 0, \"FEMALE\": 0}, \"TWENTIES\": {\"MALE\": 100, \"FEMALE\": 50}, \"THIRTIES\": {\"MALE\": 50, \"FEMALE\": 100}, \"FORTIES\": {\"MALE\": 0, \"FEMALE\": 0}, \"FIFTIES\": {\"MALE\": 0, \"FEMALE\": 0}, \"SIXTIES_OR_ABOVE\": {\"MALE\": 0, \"FEMALE\": 100}}")
         private Map<AgeGroup, Map<Gender, Double>> ageGroupPercentage = new EnumMap<>(AgeGroup.class);
-        @Schema(description = "지역별 득표수", example = "{\"10대이하\": 3, \"20대\": 3, \"30대\": 3, \"40대\": 3, \"50대\": 3, \"60대\": 3, \"70대 이상\": 3}")
+        @Schema(description = "세대별 및 성별 득표수", example = "{\"TEENS_OR_LESS\": {\"MALE\": 0, \"FEMALE\": 0}, \"TWENTIES\": {\"MALE\": 1, \"FEMALE\": 1}, \"THIRTIES\": {\"MALE\": 1, \"FEMALE\": 1}, \"FORTIES\": {\"MALE\": 0, \"FEMALE\": 0}, \"FIFTIES\": {\"MALE\": 0, \"FEMALE\": 0}, \"SIXTIES_OR_ABOVE\": {\"MALE\": 0, \"FEMALE\": 1}}")
         private Map<AgeGroup, Map<Gender, Long>> ageGroupVoteCount = new EnumMap<>(AgeGroup.class);
 
         public static BasedAgeGroupAndGender of(Candidate candidate, Map<AgeGroup, Map<Gender, Double>> ageGroupPercentage, Map<AgeGroup, Map<Gender, Long>> ageGroupVoteCount) {
